@@ -42,18 +42,18 @@ class ActerAvatar extends StatefulWidget {
   /// Avatar gesture tap for parent badge of `DisplayMode.Space`.
   final void Function()? onParentBadgeTap;
 
-  ActerAvatar(
-      {Key? key,
-      required this.avatarInfo,
-      required this.mode,
-      this.onAvatarTap,
-      this.onParentBadgeTap,
-      this.avatarsInfo,
-      this.tooltip = TooltipStyle.Combined,
-      this.secondaryToolTip = TooltipStyle.Combined,
-      this.size,
-      this.badgeSize})
-      : super(key: key ?? Key('avatar-${avatarInfo.uniqueId}-$size'));
+  ActerAvatar({
+    Key? key,
+    required this.avatarInfo,
+    required this.mode,
+    this.onAvatarTap,
+    this.onParentBadgeTap,
+    this.avatarsInfo,
+    this.tooltip = TooltipStyle.Combined,
+    this.secondaryToolTip = TooltipStyle.Combined,
+    this.size,
+    this.badgeSize = 20,
+  }) : super(key: key ?? Key('avatar-${avatarInfo.uniqueId}-$size'));
 
   @override
   _ActerAvatar createState() => _ActerAvatar();
@@ -268,12 +268,20 @@ class _ActerAvatar extends State<ActerAvatar> {
   }
 
   Widget renderSpaceParent(BuildContext context) {
-    double badgeOverflow = badgeSize / 5;
+    if (widget.badgeSize == null) {
+      // nothing. ignore
+      return SizedBox.shrink();
+    }
+    final badgeSize = widget.badgeSize ?? 20;
     if (widget.avatarsInfo == null || widget.avatarsInfo!.isEmpty) {
-      return SizedBox(height: badgeSize + badgeOverflow);
+      return SizedBox(
+        height: badgeSize,
+        width: badgeSize,
+      );
     }
 
     final parentInfo = widget.avatarsInfo![0];
+    double badgeOverflow = badgeSize / 5;
 
     return Positioned(
       bottom: -badgeOverflow,
@@ -284,13 +292,14 @@ class _ActerAvatar extends State<ActerAvatar> {
           avatarInfo: parentInfo,
           mode: DisplayMode.Space,
           size: badgeSize,
+          badgeSize: null,
         ),
       ),
     );
   }
 
   Widget renderFallback(BuildContext context) {
-    double textFallbackSize = widget.size == null ? 48 : widget.size!;
+    double textFallbackSize = widget.size ?? 48;
     double multiFallbackSize = widget.size == null ? 48 : widget.size! * 2.0;
 
     /// Fallback
