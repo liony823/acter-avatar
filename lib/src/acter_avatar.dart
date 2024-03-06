@@ -66,8 +66,25 @@ class _ActerAvatar extends State<ActerAvatar> {
   @override
   void initState() {
     super.initState();
+    _refreshAvatar();
+  }
+
+  @override
+  void didUpdateWidget(ActerAvatar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.avatarInfo.avatar != oldWidget.avatarInfo.avatar ||
+        widget.avatarInfo.avatarFuture != oldWidget.avatarInfo.avatarFuture) {
+      _refreshAvatar();
+    }
+  }
+
+  void _refreshAvatar() {
     ImageStreamListener listener =
         ImageStreamListener(setImage, onError: setImageError);
+
+    // reset
+    avatar = null;
+    imgSuccess = false;
 
     if (widget.avatarInfo.avatar != null) {
       widget.avatarInfo.avatar!
