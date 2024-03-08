@@ -42,18 +42,18 @@ class ActerAvatar extends StatefulWidget {
   /// Avatar gesture tap for parent badge of `DisplayMode.Space`.
   final void Function()? onParentBadgeTap;
 
-  ActerAvatar(
-      {Key? key,
-      required this.avatarInfo,
-      required this.mode,
-      this.onAvatarTap,
-      this.onParentBadgeTap,
-      this.avatarsInfo,
-      this.tooltip = TooltipStyle.Combined,
-      this.secondaryToolTip = TooltipStyle.Combined,
-      this.size,
-      this.badgeSize})
-      : super(key: key ?? Key('avatar-${avatarInfo.uniqueId}-$size'));
+  ActerAvatar({
+    Key? key,
+    required this.avatarInfo,
+    required this.mode,
+    this.onAvatarTap,
+    this.onParentBadgeTap,
+    this.avatarsInfo,
+    this.tooltip = TooltipStyle.Combined,
+    this.secondaryToolTip = TooltipStyle.Combined,
+    this.size,
+    this.badgeSize = 20,
+  }) : super(key: key ?? Key('avatar-${avatarInfo.uniqueId}-$size'));
 
   @override
   _ActerAvatar createState() => _ActerAvatar();
@@ -61,34 +61,37 @@ class ActerAvatar extends StatefulWidget {
 
 class _ActerAvatar extends State<ActerAvatar> {
   bool imgSuccess = false;
-  bool secondaryImgSuccess = false;
   ImageProvider<Object>? avatar;
-  ImageProvider<Object>? secondaryAvatar;
 
   @override
   void initState() {
     super.initState();
+    _refreshAvatar();
+  }
+
+  @override
+  void didUpdateWidget(ActerAvatar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.avatarInfo.avatar != oldWidget.avatarInfo.avatar ||
+        widget.avatarInfo.avatarFuture != oldWidget.avatarInfo.avatarFuture) {
+      _refreshAvatar();
+    }
+  }
+
+  void _refreshAvatar() {
     ImageStreamListener listener =
         ImageStreamListener(setImage, onError: setImageError);
-    ImageStreamListener secondaryListener =
-        ImageStreamListener(setSecondaryImage, onError: setSecondaryImageError);
+
+    // reset
+    avatar = null;
+    imgSuccess = false;
 
     if (widget.avatarInfo.avatar != null) {
       widget.avatarInfo.avatar!
           .resolve(ImageConfiguration())
           .addListener(listener);
-      if (widget.avatarsInfo != null && widget.avatarsInfo!.isNotEmpty) {
-        if (widget.avatarsInfo![0].avatar != null) {
-          widget.avatarsInfo![0].avatar!
-              .resolve(ImageConfiguration())
-              .addListener(secondaryListener);
-        }
-      }
     } else if (widget.avatarInfo.avatarFuture != null) {
       fetchImageProvider(listener);
-      if (widget.avatarsInfo != null && widget.avatarsInfo!.isNotEmpty) {
-        fetchSecondaryImageProvider(secondaryListener);
-      }
     }
   }
 
@@ -98,33 +101,15 @@ class _ActerAvatar extends State<ActerAvatar> {
     avatar = res;
   }
 
-  void fetchSecondaryImageProvider(ImageStreamListener listener) async {
-    var res = await widget.avatarsInfo![0].avatarFuture!;
-    res!.resolve(ImageConfiguration()).addListener(listener);
-    secondaryAvatar = res;
-  }
-
   void setImage(ImageInfo image, bool sync) {
     if (mounted) {
       setState(() => imgSuccess = true);
     }
   }
 
-  void setSecondaryImage(ImageInfo image, bool sync) {
-    if (mounted) {
-      setState(() => secondaryImgSuccess = true);
-    }
-  }
-
   void setImageError(Object obj, StackTrace? st) {
     if (mounted) {
       setState(() => imgSuccess = false);
-    }
-  }
-
-  void setSecondaryImageError(Object obj, StackTrace? st) {
-    if (mounted) {
-      setState(() => secondaryImgSuccess = false);
     }
   }
 
@@ -177,20 +162,6 @@ class _ActerAvatar extends State<ActerAvatar> {
     }
   }
 
-  void secondaryAvatarError(Object error, StackTrace? stackTrace) {
-    log.warning(
-      'Error loading avatar for ${widget.avatarsInfo![0].uniqueId}. Returning to fallback.',
-      error,
-      stackTrace,
-    );
-    if (mounted) {
-      setState(() {
-        secondaryAvatar = null;
-        secondaryImgSuccess = false;
-      });
-    }
-  }
-
   String? secTooltipMsg() {
     if (widget.avatarsInfo != null || widget.avatarsInfo!.isNotEmpty) {
       switch (widget.secondaryToolTip) {
@@ -224,7 +195,6 @@ class _ActerAvatar extends State<ActerAvatar> {
           radius: widget.size ?? 24,
         );
       case DisplayMode.Space:
-        double badgeOverflow = badgeSize / 5;
         return Stack(
           clipBehavior: Clip.none,
           children: <Widget>[
@@ -240,50 +210,7 @@ class _ActerAvatar extends State<ActerAvatar> {
                 ),
               ),
             ),
-            Positioned(
-              bottom: -badgeOverflow,
-              right: -badgeOverflow,
-              child: (widget.avatarsInfo == null ||
-                      widget.avatarsInfo!.isEmpty ||
-                      widget.avatarsInfo![0].avatar == null)
-                  ? SizedBox(height: badgeSize + badgeOverflow)
-                  : GestureDetector(
-                      onTap: widget.onParentBadgeTap,
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            height: widget.badgeSize ?? badgeSize,
-                            width: widget.badgeSize ?? badgeSize,
-                            child: widget.secondaryToolTip != TooltipStyle.None
-                                ? Tooltip(
-                                    message: secTooltipMsg(),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(6.0),
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: widget.avatarsInfo![0].avatar!,
-                                          onError: secondaryAvatarError,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: widget.avatarsInfo![0].avatar!,
-                                        onError: secondaryAvatarError,
-                                      ),
-                                    ),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ),
-            ),
+            renderSpaceParent(context),
           ],
         );
       case DisplayMode.GroupChat:
@@ -318,13 +245,11 @@ class _ActerAvatar extends State<ActerAvatar> {
                             message: secTooltipMsg(),
                             child: CircleAvatar(
                               foregroundImage: widget.avatarsInfo![0].avatar,
-                              onForegroundImageError: secondaryAvatarError,
                               radius: widget.size ?? 24,
                             ),
                           )
                         : CircleAvatar(
                             foregroundImage: widget.avatarsInfo![0].avatar,
-                            onForegroundImageError: secondaryAvatarError,
                             radius: widget.size ?? 24,
                           ),
                   ),
@@ -359,9 +284,39 @@ class _ActerAvatar extends State<ActerAvatar> {
     }
   }
 
-  Widget renderFallback(BuildContext context) {
+  Widget renderSpaceParent(BuildContext context) {
+    if (widget.badgeSize == null) {
+      // nothing. ignore
+      return SizedBox.shrink();
+    }
+    final badgeSize = widget.badgeSize ?? 20;
+    if (widget.avatarsInfo == null || widget.avatarsInfo!.isEmpty) {
+      return SizedBox(
+        height: badgeSize,
+        width: badgeSize,
+      );
+    }
+
+    final parentInfo = widget.avatarsInfo![0];
     double badgeOverflow = badgeSize / 5;
-    double textFallbackSize = widget.size == null ? 48 : widget.size!;
+
+    return Positioned(
+      bottom: -badgeOverflow,
+      right: -badgeOverflow,
+      child: GestureDetector(
+        onTap: widget.onParentBadgeTap,
+        child: ActerAvatar(
+          avatarInfo: parentInfo,
+          mode: DisplayMode.Space,
+          size: badgeSize,
+          badgeSize: null,
+        ),
+      ),
+    );
+  }
+
+  Widget renderFallback(BuildContext context) {
+    double textFallbackSize = widget.size ?? 48;
     double multiFallbackSize = widget.size == null ? 48 : widget.size! * 2.0;
 
     /// Fallback
@@ -435,43 +390,7 @@ class _ActerAvatar extends State<ActerAvatar> {
               size: textFallbackSize,
               shape: Shape.Rectangle,
             ),
-            Positioned(
-              bottom: -badgeOverflow,
-              right: -badgeOverflow,
-              child: widget.avatarsInfo == null || widget.avatarsInfo!.isEmpty
-                  ? SizedBox(height: badgeSize + badgeOverflow)
-                  : GestureDetector(
-                      onTap: widget.onParentBadgeTap,
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            height: widget.badgeSize ?? badgeSize,
-                            width: widget.badgeSize ?? badgeSize,
-                            child: widget.secondaryToolTip != TooltipStyle.None
-                                ? Tooltip(
-                                    message: secTooltipMsg(),
-                                    child: TextAvatar(
-                                      text:
-                                          widget.avatarsInfo![0].displayName ??
-                                              widget.avatarsInfo![0].uniqueId,
-                                      sourceText:
-                                          widget.avatarsInfo![0].uniqueId,
-                                      fontSize: 6,
-                                      shape: Shape.Rectangle,
-                                    ),
-                                  )
-                                : TextAvatar(
-                                    text: widget.avatarsInfo![0].displayName ??
-                                        widget.avatarsInfo![0].uniqueId,
-                                    sourceText: widget.avatarsInfo![0].uniqueId,
-                                    fontSize: 6,
-                                    shape: Shape.Rectangle,
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ),
-            ),
+            renderSpaceParent(context),
           ],
         );
       case DisplayMode.GroupChat:
