@@ -1,3 +1,4 @@
+import 'package:acter_avatar/src/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class AvatarInfo {
@@ -16,11 +17,15 @@ class AvatarInfo {
   /// a future that loads the avatar (show fallback until loaded)
   final Future<ImageProvider<Object>?>? avatarFuture;
 
+  /// If and how to display the tooltip.
+  final TooltipStyle tooltip;
+
   const AvatarInfo({
     required this.uniqueId,
     this.displayName,
     this.uniqueName,
     this.avatar,
     this.avatarFuture,
+    this.tooltip = TooltipStyle.Combined,
   });
 }

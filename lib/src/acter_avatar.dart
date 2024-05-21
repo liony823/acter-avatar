@@ -12,48 +12,23 @@ final log = Logger('ActerAvatar');
 /// image resizing (for memory purposes) has to be done beforehand, the image
 /// is shown as given.
 class ActerAvatar extends StatefulWidget {
-  /// Set the display mode for this Avatar.
-  final DisplayMode mode;
-
-  /// The size this Avatar has.
-  final double? size;
-
-  /// The size of parent badge in `DisplayMode.Space`
-  final double? badgeSize;
-
-  /// If and how to display the tooltip.
-  final TooltipStyle tooltip;
-
-  /// If and how to display secondary tooltip.
-  /// For avatars of `DisplayMode.Space` parent badge,
-  /// and `DisplayMode.GroupDM`
-  final TooltipStyle secondaryToolTip;
-
-  /// See [AvatarInfo].
-  final AvatarInfo avatarInfo;
+  /// Defining avatars type and configuration. See [AvatarOptions]
+  final AvatarOptions options;
 
   /// Avatar gesture tap
   final void Function()? onAvatarTap;
 
-  /// A list holding [AvatarInfo].
-  /// Useful for showing stacked avatars for `DisplayMode.GroupDM` or `DisplayMode.Space` parentBadge.
-  final List<AvatarInfo>? avatarsInfo;
-
-  /// Avatar gesture tap for parent badge of `DisplayMode.Space`.
-  final void Function()? onParentBadgeTap;
+  /// Avatar gesture tap for parent badges.
+  final void Function()? onParentBadgesTap;
 
   ActerAvatar({
     Key? key,
-    required this.avatarInfo,
-    required this.mode,
+    required this.options,
     this.onAvatarTap,
-    this.onParentBadgeTap,
-    this.avatarsInfo,
-    this.tooltip = TooltipStyle.Combined,
-    this.secondaryToolTip = TooltipStyle.Combined,
-    this.size,
-    this.badgeSize = 20,
-  }) : super(key: key ?? Key('avatar-${avatarInfo.uniqueId}-$size'));
+    this.onParentBadgesTap,
+  }) : super(
+            key: key ??
+                Key('avatar-${options.avatar.uniqueId}-${options.size}'));
 
   @override
   _ActerAvatar createState() => _ActerAvatar();
@@ -72,13 +47,16 @@ class _ActerAvatar extends State<ActerAvatar> {
   @override
   void didUpdateWidget(ActerAvatar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.avatarInfo.avatar != oldWidget.avatarInfo.avatar ||
-        widget.avatarInfo.avatarFuture != oldWidget.avatarInfo.avatarFuture) {
+    final avatarInfo = widget.options.avatar;
+    final oldAvatarInfo = oldWidget.options.avatar;
+    if (avatarInfo.avatar != oldAvatarInfo.avatar ||
+        avatarInfo.avatarFuture != oldAvatarInfo.avatarFuture) {
       _refreshAvatar();
     }
   }
 
   void _refreshAvatar() {
+    final avatarInfo = widget.options.avatar;
     ImageStreamListener listener =
         ImageStreamListener(setImage, onError: setImageError);
 
@@ -86,17 +64,16 @@ class _ActerAvatar extends State<ActerAvatar> {
     avatar = null;
     imgSuccess = false;
 
-    if (widget.avatarInfo.avatar != null) {
-      widget.avatarInfo.avatar!
-          .resolve(ImageConfiguration())
-          .addListener(listener);
-    } else if (widget.avatarInfo.avatarFuture != null) {
+    if (avatarInfo.avatar != null) {
+      avatarInfo.avatar!.resolve(ImageConfiguration()).addListener(listener);
+    } else if (avatarInfo.avatarFuture != null) {
       fetchImageProvider(listener);
     }
   }
 
   void fetchImageProvider(ImageStreamListener listener) async {
-    var res = await widget.avatarInfo.avatarFuture!;
+    final avatarInfo = widget.options.avatar;
+    var res = await avatarInfo.avatarFuture!;
     res!.resolve(ImageConfiguration()).addListener(listener);
     avatar = res;
   }
@@ -115,32 +92,18 @@ class _ActerAvatar extends State<ActerAvatar> {
 
   @override
   Widget build(BuildContext context) {
+    final avatarInfo = widget.options.avatar;
     final child =
         GestureDetector(onTap: widget.onAvatarTap, child: inner(context));
-    switch (widget.tooltip) {
-      case TooltipStyle.DisplayName:
-        return Tooltip(
-          message: widget.avatarInfo.displayName ?? widget.avatarInfo.uniqueId,
-          child: child,
-        );
-      case TooltipStyle.UniqueId:
-        return Tooltip(message: widget.avatarInfo.uniqueId, child: child);
-      case TooltipStyle.Combined:
-        var message =
-            widget.avatarInfo.uniqueName ?? widget.avatarInfo.uniqueId;
-        if (widget.avatarInfo.displayName != null) {
-          message =
-              '${widget.avatarInfo.displayName} (${widget.avatarInfo.uniqueId})';
-        }
-        return Tooltip(message: message, child: child);
-      case TooltipStyle.None:
-        return child;
-    }
+    return tooltipMsgWithChild(avatarInfo, child);
   }
 
-  Widget inner(BuildContext context) {
-    if (widget.avatarInfo.avatar != null && imgSuccess == true) {
-      return renderWithAvatar(context, widget.avatarInfo.avatar!);
+  Widget inner(
+    BuildContext context,
+  ) {
+    final avatarInfo = widget.options.avatar;
+    if (avatarInfo.avatar != null && imgSuccess == true) {
+      return renderWithAvatar(context, avatarInfo.avatar!);
     } else if (avatar != null && imgSuccess == true) {
       return renderWithAvatar(context, avatar!);
     } else {
@@ -149,8 +112,9 @@ class _ActerAvatar extends State<ActerAvatar> {
   }
 
   void avatarError(Object error, StackTrace? stackTrace) {
+    final avatarInfo = widget.options.avatar;
     log.warning(
-      'Error loading avatar for ${widget.avatarInfo.uniqueId}. Returning to fallback.',
+      'Error loading avatar for ${avatarInfo.uniqueId}. Returning to fallback.',
       error,
       stackTrace,
     );
@@ -162,245 +126,242 @@ class _ActerAvatar extends State<ActerAvatar> {
     }
   }
 
-  String? secTooltipMsg() {
-    if (widget.avatarsInfo != null || widget.avatarsInfo!.isNotEmpty) {
-      switch (widget.secondaryToolTip) {
-        case TooltipStyle.DisplayName:
-          return widget.avatarsInfo![0].displayName ??
-              widget.avatarsInfo![0].uniqueId;
-        case TooltipStyle.UniqueId:
-          return widget.avatarsInfo![0].uniqueId;
-        case TooltipStyle.Combined:
-          var message = widget.avatarsInfo![0].uniqueName ??
-              widget.avatarsInfo![0].uniqueId;
-          if (widget.avatarsInfo![0].displayName != null) {
-            message =
-                '${widget.avatarsInfo![0].displayName} (${widget.avatarsInfo![0].uniqueId})';
-          }
-          return message;
-        case TooltipStyle.None:
-          return null;
-      }
-    } else {
-      return null;
+  Widget tooltipMsgWithChild(AvatarInfo avatar, Widget child) {
+    switch (avatar.tooltip) {
+      case TooltipStyle.DisplayName:
+        return Tooltip(
+          message: avatar.displayName ?? avatar.uniqueId,
+          child: child,
+        );
+      case TooltipStyle.UniqueId:
+        return Tooltip(message: avatar.uniqueId, child: child);
+      case TooltipStyle.Combined:
+        var message = avatar.uniqueName ?? avatar.uniqueId;
+        if (avatar.displayName != null) {
+          message = '${avatar.displayName} (${avatar.uniqueId})';
+        }
+        return Tooltip(message: message, child: child);
+      case TooltipStyle.None:
+        return child;
     }
   }
 
   Widget renderWithAvatar(BuildContext context, ImageProvider avatar) {
-    switch (widget.mode) {
-      case DisplayMode.DM:
-        return CircleAvatar(
-          foregroundImage: avatar,
-          onForegroundImageError: avatarError,
-          radius: widget.size ?? 24,
-        );
-      case DisplayMode.Space:
-        return Stack(
-          clipBehavior: Clip.none,
-          children: <Widget>[
-            Container(
-              height: widget.size ?? 48,
-              width: widget.size ?? 48,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6.0),
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: avatar,
-                  onError: avatarError,
-                ),
-              ),
-            ),
-            renderSpaceParent(context),
-          ],
-        );
-      case DisplayMode.GroupChat:
-        return Container(
-          height: widget.size ?? 48,
-          width: widget.size ?? 48,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6.0),
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: avatar,
-              onError: avatarError,
-            ),
-          ),
-        );
-      case DisplayMode.GroupDM:
-        return widget.avatarsInfo != null && widget.avatarsInfo!.isNotEmpty
-            ? Stack(
-                alignment: Alignment.bottomLeft,
-                clipBehavior: Clip.none,
-                children: [
-                  CircleAvatar(
-                    foregroundImage: avatar,
-                    onForegroundImageError: avatarError,
-                    radius: widget.size ?? 24,
+    return widget.options.when(
+        // default render
+        (avatarInfo, parentBadges, size, badgesSize) => Stack(
+              clipBehavior: Clip.none,
+              children: <Widget>[
+                Container(
+                  height: size ?? 48,
+                  width: size ?? 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.0),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: avatar,
+                      onError: avatarError,
+                    ),
                   ),
-                  Positioned(
-                    left: -7,
-                    bottom: -5,
-                    child: widget.secondaryToolTip != TooltipStyle.None
-                        ? Tooltip(
-                            message: secTooltipMsg(),
-                            child: CircleAvatar(
-                              foregroundImage: widget.avatarsInfo![0].avatar,
-                              radius: widget.size ?? 24,
+                ),
+                // if badges specified, render it.
+                if (parentBadges != null && parentBadges.isNotEmpty)
+                  renderBadges(context, widget.options as DefaultAvatarOptions,
+                      badgesSize),
+              ],
+            ),
+        // render for DM
+        DM: (avatarInfo, size) => CircleAvatar(
+              foregroundImage: avatar,
+              onForegroundImageError: avatarError,
+              radius: size ?? 24,
+            ),
+        // render for Group DM
+        GroupDM: ((avatarInfo, groupAvatarsInfo, size, groupAvatarSize) {
+          return groupAvatarsInfo != null && groupAvatarsInfo.isNotEmpty
+              ? Stack(
+                  alignment: Alignment.bottomLeft,
+                  clipBehavior: Clip.none,
+                  children: [
+                    CircleAvatar(
+                      foregroundImage: avatar,
+                      onForegroundImageError: avatarError,
+                      radius: size ?? 24,
+                    ),
+                    Positioned(
+                      left: -7,
+                      bottom: -5,
+                      child: tooltipMsgWithChild(
+                        groupAvatarsInfo[0],
+                        CircleAvatar(
+                          foregroundImage: groupAvatarsInfo[0].avatar,
+                          radius: size ?? 24,
+                        ),
+                      ),
+                    ),
+                    groupAvatarsInfo.length > 1
+                        ? Positioned.fill(
+                            bottom: -5,
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: Container(
+                                width: 15,
+                                height: 15,
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  '+${groupAvatarsInfo.length - 1}',
+                                  style: const TextStyle(fontSize: 8),
+                                ),
+                              ),
                             ),
                           )
-                        : CircleAvatar(
-                            foregroundImage: widget.avatarsInfo![0].avatar,
-                            radius: widget.size ?? 24,
-                          ),
-                  ),
-                  widget.avatarsInfo!.length > 1
-                      ? Positioned.fill(
-                          bottom: -5,
-                          child: Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              width: 15,
-                              height: 15,
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                color: Colors.green,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                '+${widget.avatarsInfo!.length - 1}',
-                                style: const TextStyle(fontSize: 8),
-                              ),
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                ],
-              )
-            : CircleAvatar(
-                foregroundImage: avatar,
-                onForegroundImageError: avatarError,
-                radius: widget.size ?? 24,
-              );
-    }
+                        : const SizedBox.shrink(),
+                  ],
+                )
+              : CircleAvatar(
+                  foregroundImage: avatar,
+                  onForegroundImageError: avatarError,
+                  radius: size ?? 24,
+                );
+        }));
   }
 
-  Widget renderSpaceParent(BuildContext context) {
-    if (widget.badgeSize == null) {
-      // nothing. ignore
-      return SizedBox.shrink();
-    }
-    final badgeSize = widget.badgeSize ?? 20;
-    if (widget.avatarsInfo == null || widget.avatarsInfo!.isEmpty) {
-      return SizedBox(
-        height: badgeSize,
-        width: badgeSize,
+  Widget renderBadges(
+    BuildContext context,
+    DefaultAvatarOptions options,
+    double? badgesSize,
+  ) {
+    final size = badgesSize ?? 20;
+    final badges = options.parentBadges!;
+    double badgeOverflow = size / 5;
+    final badgesLength = badges.length;
+    final thresholdCount = badgesLength <= 3 ? badgesLength : 3;
+    List<Widget> children = [];
+
+    for (int i = 0; i < thresholdCount; i++) {
+      children.add(
+        ActerAvatar(options: AvatarOptions(badges[i], size: size)),
       );
     }
-
-    final parentInfo = widget.avatarsInfo![0];
-    double badgeOverflow = badgeSize / 5;
+    if (badgesLength > 3) {
+      children.add(Align(
+        alignment: Alignment.bottomRight,
+        child: Container(
+          width: 10,
+          height: 10,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            color: Colors.green,
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            '+${badgesLength - 3}',
+            style: const TextStyle(fontSize: 8),
+            textScaler: TextScaler.linear(0.7),
+          ),
+        ),
+      ));
+    }
 
     return Positioned(
       bottom: -badgeOverflow,
       right: -badgeOverflow,
       child: GestureDetector(
-        onTap: widget.onParentBadgeTap,
-        child: ActerAvatar(
-          avatarInfo: parentInfo,
-          mode: DisplayMode.Space,
-          size: badgeSize,
-          badgeSize: null,
+        onTap: widget.onParentBadgesTap,
+        child: Wrap(
+          spacing: -5,
+          children: children,
         ),
       ),
     );
   }
 
   Widget renderFallback(BuildContext context) {
-    double textFallbackSize = widget.size ?? 48;
-    double multiFallbackSize = widget.size == null ? 48 : widget.size! * 2.0;
+    final avatarOptions = widget.options;
+    double textFallbackSize = avatarOptions.size ?? 48;
+    double multiFallbackSize =
+        avatarOptions.size == null ? 48 : avatarOptions.size! * 2.0;
+    if (avatarOptions is AvatarOptionsDM) {
+      // User fallback mode
+      return MultiAvatar(
+        uniqueId: avatarOptions.avatar.uniqueId,
+        size: multiFallbackSize,
+      );
+    } else if (avatarOptions is AvatarOptionsGroupDM) {
+      // Group fallback mode
+      return avatarOptions.groupAvatars != null &&
+              avatarOptions.groupAvatars!.isNotEmpty
+          ? Stack(
+              alignment: Alignment.bottomLeft,
+              clipBehavior: Clip.none,
+              children: [
+                MultiAvatar(
+                  uniqueId: avatarOptions.avatar.uniqueId,
+                  size: multiFallbackSize,
+                ),
+                Positioned(
+                  left: -7,
+                  bottom: -5,
+                  child: tooltipMsgWithChild(
+                    avatarOptions.groupAvatars![0],
+                    MultiAvatar(
+                      uniqueId: avatarOptions.groupAvatars![0].uniqueId,
+                      size: multiFallbackSize,
+                    ),
+                  ),
+                ),
+                avatarOptions.groupAvatars!.length > 1
+                    ? Positioned.fill(
+                        bottom: -5,
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            width: 15,
+                            height: 15,
+                            alignment: Alignment.center,
+                            decoration: const BoxDecoration(
+                              color: Colors.green,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              '+${avatarOptions.groupAvatars!.length - 1}',
+                              style: const TextStyle(fontSize: 8),
+                            ),
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ],
+            )
+          : MultiAvatar(
+              uniqueId: avatarOptions.avatar.uniqueId,
+              size: multiFallbackSize,
+            );
+    }
 
     /// Fallback
-    switch (widget.mode) {
-      case DisplayMode.DM:
-        // User fallback mode
-        return MultiAvatar(
-          uniqueId: widget.avatarInfo.uniqueId,
-          size: multiFallbackSize,
-        );
-      case DisplayMode.GroupDM:
-        return widget.avatarsInfo != null && widget.avatarsInfo!.isNotEmpty
-            ? Stack(
-                alignment: Alignment.bottomLeft,
-                clipBehavior: Clip.none,
-                children: [
-                  MultiAvatar(
-                    uniqueId: widget.avatarInfo.uniqueId,
-                    size: multiFallbackSize,
-                  ),
-                  Positioned(
-                    left: -7,
-                    bottom: -5,
-                    child: widget.secondaryToolTip != TooltipStyle.None
-                        ? Tooltip(
-                            message: secTooltipMsg(),
-                            child: MultiAvatar(
-                              uniqueId: widget.avatarsInfo![0].uniqueId,
-                              size: multiFallbackSize,
-                            ),
-                          )
-                        : MultiAvatar(
-                            uniqueId: widget.avatarsInfo![0].uniqueId,
-                            size: multiFallbackSize,
-                          ),
-                  ),
-                  widget.avatarsInfo!.length > 1
-                      ? Positioned.fill(
-                          bottom: -5,
-                          child: Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              width: 15,
-                              height: 15,
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                color: Colors.green,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                '+${widget.avatarsInfo!.length - 1}',
-                                style: const TextStyle(fontSize: 8),
-                              ),
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                ],
-              )
-            : MultiAvatar(
-                uniqueId: widget.avatarInfo.uniqueId,
-                size: multiFallbackSize,
-              );
-      case DisplayMode.Space:
-        return Stack(
-          clipBehavior: Clip.none,
-          children: <Widget>[
-            TextAvatar(
-              text: widget.avatarInfo.displayName ?? widget.avatarInfo.uniqueId,
-              sourceText: widget.avatarInfo.uniqueId,
-              size: textFallbackSize,
-              shape: Shape.Rectangle,
-            ),
-            renderSpaceParent(context),
-          ],
-        );
-      case DisplayMode.GroupChat:
-        return TextAvatar(
-          text: widget.avatarInfo.displayName ?? widget.avatarInfo.uniqueId,
-          sourceText: widget.avatarInfo.uniqueId,
-          size: widget.size ?? 48,
-          fontSize: 6,
-          shape: Shape.Rectangle,
-        );
+    else {
+      final parentBadges = (avatarOptions as DefaultAvatarOptions).parentBadges;
+      final size = avatarOptions.badgesSize ?? 18;
+      return Stack(
+        clipBehavior: Clip.none,
+        children: <Widget>[
+          TextAvatar(
+            text: avatarOptions.avatar.displayName ??
+                avatarOptions.avatar.uniqueId,
+            sourceText: avatarOptions.avatar.uniqueId,
+            size: textFallbackSize,
+            shape: Shape.Rectangle,
+            fontSize: parentBadges == null ? 6 : null,
+          ),
+          if (parentBadges != null && parentBadges.isNotEmpty)
+            renderBadges(context, avatarOptions, size),
+        ],
+      );
     }
   }
 }

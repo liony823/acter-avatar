@@ -128,36 +128,37 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ActerAvatar(
-                      mode: DisplayMode.DM,
-                      avatarInfo: AvatarInfo(
-                          uniqueId: '@aliKah:lorem.org',
-                          displayName: 'Ali Akalın',
-                          avatarFuture: getFutureImage),
-                      size: 36,
+                      options: AvatarOptions.DM(
+                          AvatarInfo(
+                              uniqueId: '@aliKah:lorem.org',
+                              displayName: 'Ali Akalın',
+                              avatarFuture: getFutureImage),
+                          size: 36),
                     ),
                     SizedBox(
                       width: 12,
                     ),
                     ActerAvatar(
-                      mode: DisplayMode.DM,
-                      avatarInfo: AvatarInfo(
-                        uniqueId: '@belut:ipsum.org',
-                        displayName: 'Bulut Peker',
-                        avatar: AssetImage('assets/images/avatar-2.jpg'),
+                      options: AvatarOptions.DM(
+                        AvatarInfo(
+                          uniqueId: '@belut:ipsum.org',
+                          displayName: 'Bulut Peker',
+                          avatar: AssetImage('assets/images/avatar-2.jpg'),
+                        ),
+                        size: 36,
                       ),
-                      size: 36,
                     ),
                     SizedBox(
                       width: 12,
                     ),
                     ActerAvatar(
-                      mode: DisplayMode.DM,
-                      avatarInfo: AvatarInfo(
-                        uniqueId: '@ceylin:lipsum.org',
-                        displayName: 'Ceylin Oztürk',
-                        avatar: AssetImage('assets/images/avatar-3.jpg'),
-                      ),
-                      size: 36,
+                      options: AvatarOptions.DM(
+                          AvatarInfo(
+                            uniqueId: '@ceylin:lipsum.org',
+                            displayName: 'Ceylin Oztürk',
+                            avatar: AssetImage('assets/images/avatar-3.jpg'),
+                          ),
+                          size: 36),
                     ),
                   ],
                 ),
@@ -174,33 +175,36 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ActerAvatar(
-                      mode: DisplayMode.DM,
-                      avatarInfo: AvatarInfo(
-                        displayName: "Ali Akalın",
-                        uniqueId: "@aliKah:lorem.org",
-                        avatarFuture: getFutureImage,
+                      options: AvatarOptions.DM(
+                        AvatarInfo(
+                          displayName: "Ali Akalın",
+                          uniqueId: "@aliKah:lorem.org",
+                          avatarFuture: getFutureImage,
+                        ),
                       ),
                     ),
                     SizedBox(
                       width: 12,
                     ),
                     ActerAvatar(
-                      mode: DisplayMode.DM,
-                      avatarInfo: AvatarInfo(
-                        displayName: "Bulut Peker",
-                        uniqueId: "@belut:ipsum.org",
-                        avatar: AssetImage('assets/images/avatar-2.jpg'),
+                      options: AvatarOptions.DM(
+                        AvatarInfo(
+                          displayName: "Bulut Peker",
+                          uniqueId: "@belut:ipsum.org",
+                          avatar: AssetImage('assets/images/avatar-2.jpg'),
+                        ),
                       ),
                     ),
                     SizedBox(
                       width: 12,
                     ),
                     ActerAvatar(
-                      mode: DisplayMode.DM,
-                      avatarInfo: AvatarInfo(
-                        displayName: "Ceylin Oztürk",
-                        uniqueId: "@ceylin:lipsum.org",
-                        avatar: AssetImage('assets/images/avatar-3.jpg'),
+                      options: AvatarOptions.DM(
+                        AvatarInfo(
+                          displayName: "Ceylin Oztürk",
+                          uniqueId: "@ceylin:lipsum.org",
+                          avatar: AssetImage('assets/images/avatar-3.jpg'),
+                        ),
                       ),
                     ),
                   ],
@@ -210,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 20,
               ),
               Text(
-                'Space Acter Avatars ',
+                'Default Acter Avatars',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               Padding(
@@ -223,30 +227,33 @@ class _MyHomePageState extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "A-Space",
-                            uniqueId: uuid.v4(),
+                          options: AvatarOptions(
+                            AvatarInfo(
+                              displayName: "A-Space",
+                              uniqueId: uuid.v4(),
+                            ),
                           ),
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "B-Space",
-                            uniqueId: uuid.v4(),
+                          options: AvatarOptions(
+                            AvatarInfo(
+                              displayName: "B-Space",
+                              uniqueId: uuid.v4(),
+                            ),
                           ),
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "C-Space",
-                            uniqueId: uuid.v4(),
+                          options: AvatarOptions(
+                            AvatarInfo(
+                              displayName: "C-Space",
+                              uniqueId: uuid.v4(),
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -257,33 +264,34 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 12,
                         ),
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "Lorem",
-                            uniqueId: uuid.v4(),
-                            avatar: AssetImage('assets/images/space-1.jpg'),
+                          options: AvatarOptions(
+                            AvatarInfo(
+                              displayName: "Lorem",
+                              uniqueId: uuid.v4(),
+                              avatar: AssetImage('assets/images/space-1.jpg'),
+                            ),
                           ),
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "Ipsum",
-                            uniqueId: uuid.v4(),
-                            avatar: AssetImage('assets/images/space-2.jpg'),
-                          ),
-                        ),
+                            options: AvatarOptions(
+                          AvatarInfo(
+                              displayName: "Ipsum",
+                              uniqueId: uuid.v4(),
+                              avatar: AssetImage('assets/images/space-2.jpg')),
+                        )),
                         SizedBox(
                           width: 12,
                         ),
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "Lipsum",
-                            uniqueId: uuid.v4(),
-                            avatar: AssetImage('assets/images/space-3.jpg'),
+                          options: AvatarOptions(
+                            AvatarInfo(
+                              displayName: "Lipsum",
+                              uniqueId: uuid.v4(),
+                              avatar: AssetImage('assets/images/space-3.jpg'),
+                            ),
                           ),
                         ),
                       ],
@@ -308,7 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 20),
               Text(
-                'Space Acter Avatars With Parent Badge',
+                'Default Acter Avatars With Parent Badge',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               Padding(
@@ -321,46 +329,61 @@ class _MyHomePageState extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "A-Space",
-                            uniqueId: uuid.v4(),
-                          ),
-                          avatarsInfo: [
+                          options: AvatarOptions(
                             AvatarInfo(
-                                uniqueId: uuid.v4(), displayName: 'Lorem Ipsum')
-                          ],
+                              displayName: "A-Space",
+                              uniqueId: uuid.v4(),
+                            ),
+                            parentBadges: [
+                              AvatarInfo(
+                                  uniqueId: uuid.v4(),
+                                  displayName: 'Lorem Ipsum')
+                            ],
+                          ),
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "B-Space",
-                            uniqueId: uuid.v4(),
-                          ),
-                          avatarsInfo: [
+                          options: AvatarOptions(
                             AvatarInfo(
-                                uniqueId: uuid.v4(), displayName: 'Ipsum Lorem')
-                          ],
+                              displayName: "B-Space",
+                              uniqueId: uuid.v4(),
+                            ),
+                            parentBadges: [
+                              AvatarInfo(
+                                  uniqueId: uuid.v4(),
+                                  displayName: 'Lorem Ipsum'),
+                              AvatarInfo(
+                                  uniqueId: uuid.v4(),
+                                  displayName: 'Ipsum Lorem'),
+                              AvatarInfo(
+                                displayName: "Lipsum",
+                                uniqueId: uuid.v4(),
+                              ),
+                              AvatarInfo(
+                                displayName: "Lipsum",
+                                uniqueId: uuid.v4(),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "C-Space",
-                            uniqueId: uuid.v4(),
-                          ),
-                          avatarsInfo: [
+                          options: AvatarOptions(
                             AvatarInfo(
                               displayName: "C-Space",
                               uniqueId: uuid.v4(),
-                              avatar: AssetImage('assets/images/space-3.jpg'),
                             ),
-                          ],
+                            parentBadges: [
+                              AvatarInfo(
+                                displayName: "Lipsum",
+                                uniqueId: uuid.v4(),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(
                           width: 12,
@@ -370,55 +393,74 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 12,
                         ),
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: 'A-Space',
-                            uniqueId: uuid.v4(),
-                            avatar: AssetImage('assets/images/space-1.jpg'),
+                          options: AvatarOptions(
+                            AvatarInfo(
+                              displayName: 'A-Space',
+                              uniqueId: uuid.v4(),
+                              avatar: AssetImage('assets/images/space-1.jpg'),
+                            ),
+                            parentBadges: [
+                              AvatarInfo(
+                                displayName: "B-Space",
+                                uniqueId: uuid.v4(),
+                                avatar: AssetImage('assets/images/space-2.jpg'),
+                              ),
+                            ],
                           ),
-                          avatarsInfo: [
+                        ),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        ActerAvatar(
+                          options: AvatarOptions(
                             AvatarInfo(
                               displayName: "B-Space",
                               uniqueId: uuid.v4(),
                               avatar: AssetImage('assets/images/space-2.jpg'),
                             ),
-                          ],
+                            badgesSize: 16,
+                            parentBadges: [
+                              AvatarInfo(
+                                displayName: 'A-Space',
+                                uniqueId: uuid.v4(),
+                                avatar: AssetImage('assets/images/space-1.jpg'),
+                              ),
+                              AvatarInfo(
+                                displayName: "C-Space",
+                                uniqueId: uuid.v4(),
+                                avatar: AssetImage('assets/images/space-3.jpg'),
+                              ),
+                              AvatarInfo(
+                                displayName: "B-Space",
+                                uniqueId: uuid.v4(),
+                                avatar: AssetImage('assets/images/space-2.jpg'),
+                              ),
+                              AvatarInfo(
+                                displayName: "B-Space",
+                                uniqueId: uuid.v4(),
+                                avatar: AssetImage('assets/images/space-2.jpg'),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "B-Space",
-                            uniqueId: uuid.v4(),
-                            avatar: AssetImage('assets/images/space-2.jpg'),
-                          ),
-                          avatarsInfo: [
-                            AvatarInfo(
-                              displayName: "C-Space",
-                              uniqueId: uuid.v4(),
-                              avatar: AssetImage('assets/images/space-3.jpg'),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        ActerAvatar(
-                          mode: DisplayMode.Space,
-                          avatarInfo: AvatarInfo(
-                            displayName: "C-Space",
-                            uniqueId: uuid.v4(),
-                            avatar: AssetImage('assets/images/space-3.jpg'),
-                          ),
-                          avatarsInfo: [
-                            AvatarInfo(
-                              displayName: "C-Space",
-                              uniqueId: uuid.v4(),
-                              avatar: AssetImage('assets/images/space-3.jpg'),
-                            ),
-                          ],
+                          options: AvatarOptions(
+                              AvatarInfo(
+                                displayName: "C-Space",
+                                uniqueId: uuid.v4(),
+                                avatar: AssetImage('assets/images/space-3.jpg'),
+                              ),
+                              parentBadges: [
+                                AvatarInfo(
+                                  displayName: "C-Space",
+                                  uniqueId: uuid.v4(),
+                                  avatar:
+                                      AssetImage('assets/images/space-3.jpg'),
+                                ),
+                              ]),
                         ),
                       ],
                     ),
@@ -455,30 +497,33 @@ class _MyHomePageState extends State<MyHomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ActerAvatar(
-                        mode: DisplayMode.DM,
-                        avatarInfo: AvatarInfo(
-                          displayName: "Ali Akalın",
-                          uniqueId: "@aliKah:lorem.org",
+                        options: AvatarOptions.DM(
+                          AvatarInfo(
+                            displayName: "Ali Akalın",
+                            uniqueId: "@aliKah:lorem.org",
+                          ),
                         ),
                       ),
                       SizedBox(
                         width: 12,
                       ),
                       ActerAvatar(
-                        mode: DisplayMode.DM,
-                        avatarInfo: AvatarInfo(
-                          uniqueId: '@belut:ipsum.org',
-                          displayName: 'Bulut Peker',
+                        options: AvatarOptions.DM(
+                          AvatarInfo(
+                            uniqueId: '@belut:ipsum.org',
+                            displayName: 'Bulut Peker',
+                          ),
                         ),
                       ),
                       SizedBox(
                         width: 12,
                       ),
                       ActerAvatar(
-                        mode: DisplayMode.DM,
-                        avatarInfo: AvatarInfo(
-                          displayName: "Ceylin Oztürk",
-                          uniqueId: "@ceylin:lipsum.org",
+                        options: AvatarOptions.DM(
+                          AvatarInfo(
+                            displayName: "Ceylin Oztürk",
+                            uniqueId: "@ceylin:lipsum.org",
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -490,11 +535,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       ActerAvatar(
                         key: UniqueKey(),
-                        mode: DisplayMode.DM,
-                        avatarInfo: AvatarInfo(
-                          displayName: "Ali Akalın",
-                          uniqueId: "@aliKah:lorem.org",
-                          avatarFuture: getFutureImage,
+                        options: AvatarOptions.DM(
+                          AvatarInfo(
+                            displayName: "Ali Akalın",
+                            uniqueId: "@aliKah:lorem.org",
+                            avatarFuture: getFutureImage,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -502,11 +548,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       ActerAvatar(
                         key: UniqueKey(),
-                        mode: DisplayMode.DM,
-                        avatarInfo: AvatarInfo(
-                          uniqueId: '@belut:ipsum.org',
-                          displayName: 'Bulut Peker',
-                          avatar: AssetImage('assets/images/avatar-2.jpg'),
+                        options: AvatarOptions.DM(
+                          AvatarInfo(
+                            uniqueId: '@belut:ipsum.org',
+                            displayName: 'Bulut Peker',
+                            avatar: AssetImage('assets/images/avatar-2.jpg'),
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -514,11 +561,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       ActerAvatar(
                         key: UniqueKey(),
-                        mode: DisplayMode.DM,
-                        avatarInfo: AvatarInfo(
-                          displayName: "Ceylin Oztürk",
-                          uniqueId: "@ceylin:lipsum.org",
-                          avatar: AssetImage('assets/images/avatar-3.jpg'),
+                        options: AvatarOptions.DM(
+                          AvatarInfo(
+                            displayName: "Ceylin Oztürk",
+                            uniqueId: "@ceylin:lipsum.org",
+                            avatar: AssetImage('assets/images/avatar-3.jpg'),
+                          ),
                         ),
                       ),
                     ],
@@ -555,69 +603,72 @@ class _MyHomePageState extends State<MyHomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ActerAvatar(
-                        mode: DisplayMode.GroupDM,
-                        avatarInfo: AvatarInfo(
-                          uniqueId: "@xantos:lipsum.org",
-                          displayName: 'Xantos Salvo',
+                        options: AvatarOptions.GroupDM(
+                          AvatarInfo(
+                            uniqueId: "@xantos:lipsum.org",
+                            displayName: 'Xantos Salvo',
+                          ),
+                          groupAvatars: [
+                            AvatarInfo(
+                              uniqueId: "@yuval:lorem.org",
+                              displayName: "Yuval Noah",
+                            ),
+                            AvatarInfo(
+                              uniqueId: "@yuval:lorem.org",
+                              displayName: "Yuval Noah",
+                            ),
+                            AvatarInfo(
+                              uniqueId: "@yuval:lorem.org",
+                              displayName: "Yuval Noah",
+                            ),
+                            AvatarInfo(
+                              uniqueId: "@yuval:lorem.org",
+                              displayName: "Yuval Noah",
+                            ),
+                          ],
                         ),
-                        avatarsInfo: [
-                          AvatarInfo(
-                            uniqueId: "@yuval:lorem.org",
-                            displayName: "Yuval Noah",
-                          ),
-                          AvatarInfo(
-                            uniqueId: "@yuval:lorem.org",
-                            displayName: "Yuval Noah",
-                          ),
-                          AvatarInfo(
-                            uniqueId: "@yuval:lorem.org",
-                            displayName: "Yuval Noah",
-                          ),
-                          AvatarInfo(
-                            uniqueId: "@yuval:lorem.org",
-                            displayName: "Yuval Noah",
-                          ),
-                        ],
                       ),
                       SizedBox(
                         width: 12,
                       ),
                       ActerAvatar(
-                        mode: DisplayMode.GroupDM,
-                        avatarInfo: AvatarInfo(
-                          uniqueId: "@yuval:lorem.org",
-                          displayName: "Yuval Noah",
+                        options: AvatarOptions.GroupDM(
+                          AvatarInfo(
+                            uniqueId: "@yuval:lorem.org",
+                            displayName: "Yuval Noah",
+                          ),
+                          groupAvatars: [
+                            AvatarInfo(
+                              uniqueId: "@zoey:ipsum.org",
+                              displayName: 'Zoey Gen',
+                            ),
+                          ],
                         ),
-                        avatarsInfo: [
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      ActerAvatar(
+                        options: AvatarOptions.GroupDM(
                           AvatarInfo(
                             uniqueId: "@zoey:ipsum.org",
                             displayName: 'Zoey Gen',
                           ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      ActerAvatar(
-                        mode: DisplayMode.GroupDM,
-                        avatarInfo: AvatarInfo(
-                          uniqueId: "@zoey:ipsum.org",
-                          displayName: 'Zoey Gen',
+                          groupAvatars: [
+                            AvatarInfo(
+                              uniqueId: "@yuval:lorem.org",
+                              displayName: "Yuval Noah",
+                            ),
+                            AvatarInfo(
+                              uniqueId: "@yuval:lorem.org",
+                              displayName: "Yuval Noah",
+                            ),
+                            AvatarInfo(
+                              uniqueId: "@yuval:lorem.org",
+                              displayName: "Yuval Noah",
+                            ),
+                          ],
                         ),
-                        avatarsInfo: [
-                          AvatarInfo(
-                            uniqueId: "@yuval:lorem.org",
-                            displayName: "Yuval Noah",
-                          ),
-                          AvatarInfo(
-                            uniqueId: "@yuval:lorem.org",
-                            displayName: "Yuval Noah",
-                          ),
-                          AvatarInfo(
-                            uniqueId: "@yuval:lorem.org",
-                            displayName: "Yuval Noah",
-                          ),
-                        ],
                       ),
                       SizedBox(
                         width: 10,
@@ -627,65 +678,69 @@ class _MyHomePageState extends State<MyHomePage> {
                         width: 10,
                       ),
                       ActerAvatar(
-                        mode: DisplayMode.GroupDM,
-                        avatarInfo: AvatarInfo(
-                          uniqueId: "@aliKah:lorem.org",
-                          displayName: "",
-                          avatar: AssetImage('assets/images/avatar-1.jpg'),
+                        options: AvatarOptions.GroupDM(
+                          AvatarInfo(
+                            uniqueId: "@aliKah:lorem.org",
+                            displayName: "",
+                            avatar: AssetImage('assets/images/avatar-1.jpg'),
+                          ),
+                          groupAvatars: [
+                            AvatarInfo(
+                              uniqueId: "@bulut:ipsum.org",
+                              displayName: "Bulut Peker",
+                              avatar: AssetImage('assets/images/avatar-2.jpg'),
+                            ),
+                            AvatarInfo(
+                              uniqueId: "@bulut:ipsum.org",
+                              displayName: "Bulut Peker",
+                              avatar: AssetImage('assets/images/avatar-2.jpg'),
+                            ),
+                          ],
                         ),
-                        avatarsInfo: [
-                          AvatarInfo(
-                            uniqueId: "@bulut:ipsum.org",
-                            displayName: "Bulut Peker",
-                            avatar: AssetImage('assets/images/avatar-2.jpg'),
-                          ),
-                          AvatarInfo(
-                            uniqueId: "@bulut:ipsum.org",
-                            displayName: "Bulut Peker",
-                            avatar: AssetImage('assets/images/avatar-2.jpg'),
-                          ),
-                        ],
                       ),
                       SizedBox(
                         width: 12,
                       ),
                       ActerAvatar(
-                        mode: DisplayMode.GroupDM,
-                        avatarInfo: AvatarInfo(
-                          uniqueId: "@bulut:ipsum.org",
-                          displayName: "Bulut Peker",
-                          avatar: AssetImage('assets/images/avatar-2.jpg'),
-                        ),
-                        avatarsInfo: [
+                        options: AvatarOptions.GroupDM(
                           AvatarInfo(
-                            uniqueId: "@aliKah:lorem.org",
-                            displayName: "Ali Akalin",
-                            avatar: AssetImage('assets/images/avatar-1.jpg'),
+                            uniqueId: "@bulut:ipsum.org",
+                            displayName: "Bulut Peker",
+                            avatar: AssetImage('assets/images/avatar-2.jpg'),
                           ),
-                        ],
+                          groupAvatars: [
+                            AvatarInfo(
+                              uniqueId: "@aliKah:lorem.org",
+                              displayName: "Ali Akalin",
+                              avatar: AssetImage('assets/images/avatar-1.jpg'),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         width: 12,
                       ),
                       ActerAvatar(
-                        mode: DisplayMode.GroupDM,
-                        avatarInfo: AvatarInfo(
-                          uniqueId: '@ceylin:lipsum.org',
-                          displayName: "Ceylin Oztürk",
-                          avatar: AssetImage('assets/images/avatar-3.jpg'),
-                        ),
-                        avatarsInfo: [
-                          AvatarInfo(
-                            uniqueId: "@aliKah:lorem.org",
-                            displayName: "Ali Akalin",
-                            avatar: AssetImage('assets/images/avatar-1.jpg'),
-                          ),
-                          AvatarInfo(
-                            uniqueId: "@aliKah:lorem.org",
-                            displayName: "Ali Akalin",
-                            avatar: AssetImage('assets/images/avatar-1.jpg'),
-                          ),
-                        ],
+                        options: AvatarOptions.GroupDM(
+                            AvatarInfo(
+                              uniqueId: '@ceylin:lipsum.org',
+                              displayName: "Ceylin Oztürk",
+                              avatar: AssetImage('assets/images/avatar-3.jpg'),
+                            ),
+                            groupAvatars: [
+                              AvatarInfo(
+                                uniqueId: "@aliKah:lorem.org",
+                                displayName: "Ali Akalin",
+                                avatar:
+                                    AssetImage('assets/images/avatar-1.jpg'),
+                              ),
+                              AvatarInfo(
+                                uniqueId: "@aliKah:lorem.org",
+                                displayName: "Ali Akalin",
+                                avatar:
+                                    AssetImage('assets/images/avatar-1.jpg'),
+                              ),
+                            ]),
                       ),
                     ],
                   ),

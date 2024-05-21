@@ -6,3 +6,4 @@ export 'src/text_avatar.dart';
 export 'src/multi_avatar.dart';
 export 'src/acter_avatar.dart';
 export 'src/models/avatar_info.dart';
+export 'src/models/avatar_options.dart';

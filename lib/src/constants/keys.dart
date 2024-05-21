@@ -6,6 +6,5 @@ class TestKeys {
   static const multiAvatarKey = Key('Multi-avatar');
   static const textAvatarKey = Key('Text-Avatar');
   static const circleAvatarKey = Key('Circle-Avatar');
-  static const spaceAvatarKey = Key('Space-Avatar');
   static const stackedAvatarKey = Key('Stacked-Avatar');
 }
