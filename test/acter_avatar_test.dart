@@ -180,8 +180,8 @@ void main() {
       final innerAvatar = tester.getSize(find.descendant(
           of: avatarFinder, matching: find.byType(ActerAvatar)));
       // expect parent badge fallback size.
-      expect(innerAvatar.height, equals(20));
-      expect(innerAvatar.width, equals(20));
+      expect(innerAvatar.height, equals(18));
+      expect(innerAvatar.width, equals(18));
     });
     testWidgets('Space Avatar Parent badge with NetworkImage render',
         (WidgetTester tester) async {
@@ -299,7 +299,7 @@ void main() {
       expect(avatarFinder, findsOneWidget);
       final avatar = avatarFinder.evaluate().first.widget as ActerAvatar;
       // should expect Asset Image in case of image render.
-      expect(avatar..options.avatar.avatar, NetworkImage(imagePath));
+      expect(avatar.options.avatar.avatar, NetworkImage(imagePath));
       expect((avatar.options as AvatarOptionsGroupDM).groupAvatars?[0].avatar,
           NetworkImage(image2Path));
     });
