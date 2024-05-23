@@ -1,3 +1,13 @@
+### [2.0.0+5]
+
+Redefined Acter Avatars
+
+- [Breaking Changes]:
+- A new configurable parameter `AvatarOptions` has been added and now internally wraps `ActerAvatar` params. It also deprecates `DisplayMode` enum by introducing various ways to set up via its named constructors. For newer API references and migration, see API documentation.
+- [feat.] : With `AvatarOptions` you can also render multiple parent badges (parent space in legacy terms) upto 3 avatars along with small remaining count icon.
+- Updated `/example` section with new APIs.
+- Updated `README.md`.
+
 ## [unreleased]
 
 - Fix: Show Parent even if we fallback for the main avatar
