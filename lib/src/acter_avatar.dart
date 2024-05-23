@@ -148,86 +148,102 @@ class _ActerAvatar extends State<ActerAvatar> {
 
   Widget renderWithAvatar(BuildContext context, ImageProvider avatar) {
     return widget.options.when(
-        // default render
-        (avatarInfo, parentBadges, size, badgesSize) => Stack(
-              clipBehavior: Clip.none,
-              children: <Widget>[
-                Container(
-                  height: size ?? 48,
-                  width: size ?? 48,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: avatar,
-                      onError: avatarError,
-                    ),
+        // default render .i.e. Group Chat/Space
+        (avatarInfo, parentBadges, size, badgesSize) =>
+            _renderDefault(avatar, parentBadges, size, badgesSize),
+        // render for DM
+        DM: (avatarInfo, size) => _renderDM(avatar, size),
+        // render for Group DM
+        GroupDM: ((avatarInfo, groupAvatarsInfo, size, groupAvatarSize) =>
+            _renderGroupDM(avatar, groupAvatarsInfo, size)));
+  }
+
+  Widget _renderDefault(
+    ImageProvider avatar,
+    List<AvatarInfo>? badges,
+    double? size,
+    double? badgesSize,
+  ) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: <Widget>[
+        Container(
+          height: size ?? 48,
+          width: size ?? 48,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6.0),
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: avatar,
+              onError: avatarError,
+            ),
+          ),
+        ),
+        // if badges specified, render it.
+        if (badges != null && badges.isNotEmpty)
+          renderBadges(
+              context, widget.options as DefaultAvatarOptions, badgesSize),
+      ],
+    );
+  }
+
+  Widget _renderDM(ImageProvider avatar, double? size) => CircleAvatar(
+        foregroundImage: avatar,
+        onForegroundImageError: avatarError,
+        radius: size ?? 24,
+      );
+
+  Widget _renderGroupDM(
+      ImageProvider avatar, List<AvatarInfo>? groupAvatarsInfo, double? size) {
+    return groupAvatarsInfo != null && groupAvatarsInfo.isNotEmpty
+        ? Stack(
+            alignment: Alignment.bottomLeft,
+            clipBehavior: Clip.none,
+            children: [
+              CircleAvatar(
+                foregroundImage: avatar,
+                onForegroundImageError: avatarError,
+                radius: size ?? 24,
+              ),
+              Positioned(
+                left: -7,
+                bottom: -5,
+                child: tooltipMsgWithChild(
+                  groupAvatarsInfo[0],
+                  CircleAvatar(
+                    foregroundImage: groupAvatarsInfo[0].avatar,
+                    radius: size ?? 24,
                   ),
                 ),
-                // if badges specified, render it.
-                if (parentBadges != null && parentBadges.isNotEmpty)
-                  renderBadges(context, widget.options as DefaultAvatarOptions,
-                      badgesSize),
-              ],
-            ),
-        // render for DM
-        DM: (avatarInfo, size) => CircleAvatar(
-              foregroundImage: avatar,
-              onForegroundImageError: avatarError,
-              radius: size ?? 24,
-            ),
-        // render for Group DM
-        GroupDM: ((avatarInfo, groupAvatarsInfo, size, groupAvatarSize) {
-          return groupAvatarsInfo != null && groupAvatarsInfo.isNotEmpty
-              ? Stack(
-                  alignment: Alignment.bottomLeft,
-                  clipBehavior: Clip.none,
-                  children: [
-                    CircleAvatar(
-                      foregroundImage: avatar,
-                      onForegroundImageError: avatarError,
-                      radius: size ?? 24,
-                    ),
-                    Positioned(
-                      left: -7,
+              ),
+              groupAvatarsInfo.length > 1
+                  ? Positioned.fill(
                       bottom: -5,
-                      child: tooltipMsgWithChild(
-                        groupAvatarsInfo[0],
-                        CircleAvatar(
-                          foregroundImage: groupAvatarsInfo[0].avatar,
-                          radius: size ?? 24,
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: Container(
+                          width: 15,
+                          height: 15,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '+${groupAvatarsInfo.length - 1}',
+                            style: const TextStyle(fontSize: 8),
+                          ),
                         ),
                       ),
-                    ),
-                    groupAvatarsInfo.length > 1
-                        ? Positioned.fill(
-                            bottom: -5,
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Container(
-                                width: 15,
-                                height: 15,
-                                alignment: Alignment.center,
-                                decoration: const BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Text(
-                                  '+${groupAvatarsInfo.length - 1}',
-                                  style: const TextStyle(fontSize: 8),
-                                ),
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ],
-                )
-              : CircleAvatar(
-                  foregroundImage: avatar,
-                  onForegroundImageError: avatarError,
-                  radius: size ?? 24,
-                );
-        }));
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          )
+        : CircleAvatar(
+            foregroundImage: avatar,
+            onForegroundImageError: avatarError,
+            radius: size ?? 24,
+          );
   }
 
   Widget renderBadges(
@@ -240,29 +256,33 @@ class _ActerAvatar extends State<ActerAvatar> {
     double badgeOverflow = size / 5;
     final badgesLength = badges.length;
     final thresholdCount = badgesLength <= 3 ? badgesLength : 3;
-    List<Widget> children = [];
 
-    for (int i = 0; i < thresholdCount; i++) {
-      children.add(
-        ActerAvatar(options: AvatarOptions(badges[i], size: size)),
-      );
-    }
+    List<Widget> children = badges
+        .getRange(0, thresholdCount)
+        .map(
+          (badge) => GestureDetector(
+            onTap: widget.onParentBadgesTap,
+            child: ActerAvatar(
+              options: AvatarOptions(badge, size: size),
+            ),
+          ),
+        )
+        .cast<Widget>()
+        .toList();
+
     if (badgesLength > 3) {
-      children.add(Align(
-        alignment: Alignment.bottomRight,
-        child: Container(
-          width: 10,
-          height: 10,
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: Colors.green,
-            shape: BoxShape.circle,
-          ),
-          child: Text(
-            '+${badgesLength - 3}',
-            style: const TextStyle(fontSize: 8),
-            textScaler: TextScaler.linear(0.7),
-          ),
+      children.add(Container(
+        width: 10,
+        height: 10,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          color: Colors.green,
+          shape: BoxShape.circle,
+        ),
+        child: Text(
+          '+${badgesLength - 3}',
+          style: const TextStyle(fontSize: 8),
+          textScaler: TextScaler.linear(0.7),
         ),
       ));
     }
@@ -270,12 +290,9 @@ class _ActerAvatar extends State<ActerAvatar> {
     return Positioned(
       bottom: -badgeOverflow,
       right: -badgeOverflow,
-      child: GestureDetector(
-        onTap: widget.onParentBadgesTap,
-        child: Wrap(
-          spacing: -5,
-          children: children,
-        ),
+      child: Wrap(
+        spacing: -5,
+        children: children,
       ),
     );
   }
@@ -346,7 +363,7 @@ class _ActerAvatar extends State<ActerAvatar> {
     /// Fallback
     else {
       final parentBadges = (avatarOptions as DefaultAvatarOptions).parentBadges;
-      final size = avatarOptions.badgesSize ?? 18;
+      final size = avatarOptions.badgesSize ?? 16;
       return Stack(
         clipBehavior: Clip.none,
         children: <Widget>[

@@ -180,8 +180,8 @@ void main() {
       final innerAvatar = tester.getSize(find.descendant(
           of: avatarFinder, matching: find.byType(ActerAvatar)));
       // expect parent badge fallback size.
-      expect(innerAvatar.height, equals(18));
-      expect(innerAvatar.width, equals(18));
+      expect(innerAvatar.height, equals(16));
+      expect(innerAvatar.width, equals(16));
     });
     testWidgets('Space Avatar Parent badge with NetworkImage render',
         (WidgetTester tester) async {
