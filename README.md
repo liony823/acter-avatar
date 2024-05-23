@@ -76,13 +76,13 @@ You can also provide list of `AvatarInfo` in `parentBadges` or `groupAvatars` in
         avatar: NetworkImage(*someImageLink*)),
     parentBadges: [
       // more `AvatarInfo` here.
-    ]
+    ],
     size: 20,
     parentBadgesSize: 10,
   );
     return ActerAvatar(
         options: avatarOptions,
-      ),
+      );
 ```
 
 For more info regarding avatar usage. See our `Example` section.
