@@ -14,13 +14,13 @@ void main() {
   group('Circular Avatar tests', () {
     testWidgets('User Circle Avatar with specified size',
         (WidgetTester tester) async {
+      final options =
+          AvatarOptions.DM(AvatarInfo(uniqueId: 'test:acter.org'), size: 36);
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
             key: TestKeys.circleAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: 'test:acter.org'),
-            mode: DisplayMode.DM,
-            size: 36,
+            options: options,
           ),
         ),
       ));
@@ -35,12 +35,12 @@ void main() {
     });
     testWidgets('User Circle Avatar with fallback size',
         (WidgetTester tester) async {
+      final options = AvatarOptions.DM(AvatarInfo(uniqueId: 'test:acter.org'));
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
             key: TestKeys.circleAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: 'test:acter.org'),
-            mode: DisplayMode.DM,
+            options: options,
           ),
         ),
       ));
@@ -52,17 +52,18 @@ void main() {
       expect(avatarSize.width, equals(48));
     });
 
-    testWidgets('User Circle Avatar with AssetImage render',
+    testWidgets('User Circle Avatar with NetworkImage render',
         (WidgetTester tester) async {
       final String imagePath =
           'https://st.depositphotos.com/1898481/5087/i/450/depositphotos_50878063-stock-photo-people.jpg';
       final image = NetworkImage(imagePath);
+      final options = AvatarOptions.DM(
+          AvatarInfo(uniqueId: '@test:acter.org', avatar: image));
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
             key: TestKeys.circleAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: '@test:acter.org', avatar: image),
-            mode: DisplayMode.DM,
+            options: options,
           ),
         ),
       ));
@@ -72,44 +73,42 @@ void main() {
       expect(avatarFinder, findsOneWidget);
       final avatar = avatarFinder.evaluate().first.widget as ActerAvatar;
       // should expect Asset Image in case of image render.
-      expect(avatar.avatarInfo.avatar, NetworkImage(imagePath));
+      expect(avatar.options.avatar.avatar, NetworkImage(imagePath));
     });
   });
 
   group('Space Avatar tests', () {
     testWidgets('Space Avatar with specified size',
         (WidgetTester tester) async {
+      final options =
+          AvatarOptions(AvatarInfo(uniqueId: 'test:acter.org'), size: 36);
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
-            key: TestKeys.spaceAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: 'test:acter.org'),
-            mode: DisplayMode.Space,
-            size: 36,
+            key: TestKeys.widgetKey,
+            options: options,
           ),
         ),
       ));
       await tester.pumpAndSettle();
-      final Size avatarSize =
-          tester.getSize(find.byKey(TestKeys.spaceAvatarKey));
+      final Size avatarSize = tester.getSize(find.byKey(TestKeys.widgetKey));
 
       // should expect specified fallback size
       expect(avatarSize.height, equals(36));
       expect(avatarSize.width, equals(36));
     });
     testWidgets('Space Avatar with fallback size', (WidgetTester tester) async {
+      final options = AvatarOptions(AvatarInfo(uniqueId: 'test:acter.org'));
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
-            key: TestKeys.spaceAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: 'test:acter.org'),
-            mode: DisplayMode.Space,
+            key: TestKeys.widgetKey,
+            options: options,
           ),
         ),
       ));
       await tester.pumpAndSettle();
-      final Size avatarSize =
-          tester.getSize(find.byKey(TestKeys.spaceAvatarKey));
+      final Size avatarSize = tester.getSize(find.byKey(TestKeys.widgetKey));
       // should expect default fallback avatar size
       expect(avatarSize.height, equals(48));
       expect(avatarSize.width, equals(48));
@@ -120,39 +119,39 @@ void main() {
       final String imagePath =
           'https://st5.depositphotos.com/38460822/63964/i/600/depositphotos_639649504-stock-photo-mail-sign-sign-alphabet-made.jpg';
       final image = NetworkImage(imagePath);
+      final options =
+          AvatarOptions(AvatarInfo(uniqueId: '@test:acter.org', avatar: image));
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
-            key: TestKeys.spaceAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: '@test:acter.org', avatar: image),
-            mode: DisplayMode.Space,
+            key: TestKeys.widgetKey,
+            options: options,
           ),
         ),
       ));
       await tester.pumpAndSettle();
-      final avatarFinder = find.byKey(TestKeys.spaceAvatarKey);
+      final avatarFinder = find.byKey(TestKeys.widgetKey);
       // should expect `ActerAvatar` is present
       expect(avatarFinder, findsOneWidget);
       final avatar = avatarFinder.evaluate().first.widget as ActerAvatar;
       // should expect Asset Image in case of image render.
-      expect(avatar.avatarInfo.avatar, NetworkImage(imagePath));
+      expect(avatar.options.avatar.avatar, NetworkImage(imagePath));
     });
 
     testWidgets('Space Avatar Parent Badge specified size',
         (WidgetTester tester) async {
+      final options = AvatarOptions(AvatarInfo(uniqueId: '@test:acter.org'),
+          parentBadges: [AvatarInfo(uniqueId: 'Acter-Global')], badgesSize: 35);
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
-            key: TestKeys.spaceAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: '@test:acter.org'),
-            avatarsInfo: [AvatarInfo(uniqueId: 'Acter-Global')],
-            mode: DisplayMode.Space,
-            badgeSize: 35,
+            key: TestKeys.widgetKey,
+            options: options,
           ),
         ),
       ));
       await tester.pumpAndSettle();
-      final avatarFinder = find.byKey(TestKeys.spaceAvatarKey);
+      final avatarFinder = find.byKey(TestKeys.widgetKey);
       // should expect `ActerAvatar` is present
       expect(avatarFinder, findsOneWidget);
       final innerAvatar = tester.getSize(find.descendant(
@@ -163,62 +162,67 @@ void main() {
     });
     testWidgets('Space Avatar Parent Badge fallback size',
         (WidgetTester tester) async {
+      final options = AvatarOptions(AvatarInfo(uniqueId: '@test:acter.org'),
+          parentBadges: [AvatarInfo(uniqueId: 'Acter-Global')]);
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
-            key: TestKeys.spaceAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: '@test:acter.org'),
-            avatarsInfo: [AvatarInfo(uniqueId: 'Acter-Global')],
-            mode: DisplayMode.Space,
+            key: TestKeys.widgetKey,
+            options: options,
           ),
         ),
       ));
       await tester.pumpAndSettle();
-      final avatarFinder = find.byKey(TestKeys.spaceAvatarKey);
+      final avatarFinder = find.byKey(TestKeys.widgetKey);
       // should expect `ActerAvatar` is present
       expect(avatarFinder, findsOneWidget);
       final innerAvatar = tester.getSize(find.descendant(
           of: avatarFinder, matching: find.byType(ActerAvatar)));
       // expect parent badge fallback size.
-      expect(innerAvatar.height, equals(20));
-      expect(innerAvatar.width, equals(20));
+      expect(innerAvatar.height, equals(16));
+      expect(innerAvatar.width, equals(16));
     });
     testWidgets('Space Avatar Parent badge with NetworkImage render',
         (WidgetTester tester) async {
       final String imagePath =
           'https://st5.depositphotos.com/38460822/63964/i/600/depositphotos_639649504-stock-photo-mail-sign-sign-alphabet-made.jpg';
       final image = NetworkImage(imagePath);
+      final options =
+          AvatarOptions(AvatarInfo(uniqueId: '@test:acter.org'), parentBadges: [
+        AvatarInfo(uniqueId: 'Acter-Global', avatar: image),
+      ]);
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
-            key: TestKeys.spaceAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: '@test:acter.org'),
-            avatarsInfo: [AvatarInfo(uniqueId: 'Acter-Global', avatar: image)],
-            mode: DisplayMode.Space,
+            key: TestKeys.widgetKey,
+            options: options,
           ),
         ),
       ));
       await tester.pumpAndSettle();
-      final avatarFinder = find.byKey(TestKeys.spaceAvatarKey);
+      final avatarFinder = find.byKey(TestKeys.widgetKey);
       // should expect `ActerAvatar` is present
       expect(avatarFinder, findsOneWidget);
       final avatar = avatarFinder.evaluate().first.widget as ActerAvatar;
       // should expect parent badge Asset Image in case of image render.
-      expect(avatar.avatarsInfo?[0].avatar, NetworkImage(imagePath));
+      expect((avatar.options as DefaultAvatarOptions).parentBadges?[0].avatar,
+          NetworkImage(imagePath));
     });
   });
 
   group('Circular Stacked Avatar tests', () {
     testWidgets('Circular Stacked Avatars with specified size',
         (WidgetTester tester) async {
+      final options = AvatarOptions.GroupDM(
+        AvatarInfo(uniqueId: '@test:acter.org'),
+        groupAvatars: [AvatarInfo(uniqueId: '@kyra:acter.org')],
+        size: 24,
+      );
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
             key: TestKeys.stackedAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: '@test:acter.org'),
-            avatarsInfo: [AvatarInfo(uniqueId: '@kyra:acter.org')],
-            mode: DisplayMode.GroupDM,
-            size: 24,
+            options: options,
           ),
         ),
       ));
@@ -240,13 +244,15 @@ void main() {
     });
     testWidgets('Circular Stacked Avatars with fallback size',
         (WidgetTester tester) async {
+      final options = AvatarOptions.GroupDM(
+        AvatarInfo(uniqueId: '@test:acter.org'),
+        groupAvatars: [AvatarInfo(uniqueId: '@kyra:acter.org')],
+      );
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
             key: TestKeys.stackedAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: '@test:acter.org'),
-            avatarsInfo: [AvatarInfo(uniqueId: '@kyra:acter.org')],
-            mode: DisplayMode.GroupDM,
+            options: options,
           ),
         ),
       ));
@@ -272,18 +278,17 @@ void main() {
           'https://st.depositphotos.com/1898481/4683/i/600/depositphotos_46839071-stock-photo-male-person-silhouette.jpg';
       final image = NetworkImage(imagePath);
       final secondaryImage = NetworkImage(image2Path);
+      final options = AvatarOptions.GroupDM(
+        AvatarInfo(uniqueId: '@test:acter.org', avatar: image),
+        groupAvatars: [
+          AvatarInfo(uniqueId: '@kyra:acter.org', avatar: secondaryImage)
+        ],
+      );
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: ActerAvatar(
             key: TestKeys.stackedAvatarKey,
-            avatarInfo: AvatarInfo(uniqueId: '@test:acter.org', avatar: image),
-            mode: DisplayMode.GroupDM,
-            avatarsInfo: [
-              AvatarInfo(
-                uniqueId: '@kyra:acter.org',
-                avatar: secondaryImage,
-              )
-            ],
+            options: options,
           ),
         ),
       ));
@@ -293,8 +298,9 @@ void main() {
       expect(avatarFinder, findsOneWidget);
       final avatar = avatarFinder.evaluate().first.widget as ActerAvatar;
       // should expect Asset Image in case of image render.
-      expect(avatar.avatarInfo.avatar, NetworkImage(imagePath));
-      expect(avatar.avatarsInfo?[0].avatar, NetworkImage(image2Path));
+      expect(avatar.options.avatar.avatar, NetworkImage(imagePath));
+      expect((avatar.options as AvatarOptionsGroupDM).groupAvatars?[0].avatar,
+          NetworkImage(image2Path));
     });
   });
 
@@ -312,38 +318,34 @@ void main() {
         navigatorKey: navigatorKey,
         home: Scaffold(
           body: Builder(builder: (context) {
+            final options1 =
+                AvatarOptions.DM(AvatarInfo(uniqueId: '@test:acter.org'));
+            final options2 = AvatarOptions.GroupDM(
+                AvatarInfo(uniqueId: '@test:acter.org'),
+                groupAvatars: [
+                  AvatarInfo(
+                    uniqueId: '@kyra:acter.org',
+                  )
+                ]);
+            final options3 =
+                AvatarOptions(AvatarInfo(uniqueId: '@test:acter.org'));
             return Column(
               children: <Widget>[
                 ActerAvatar(
                   key: TestKeys.circleAvatarKey,
-                  avatarInfo: AvatarInfo(uniqueId: '@test:acter.org'),
-                  mode: DisplayMode.DM,
+                  options: options1,
                   onAvatarTap: () => onTapped(context, 'DM Avatar tapped'),
                 ),
                 ActerAvatar(
                   key: TestKeys.stackedAvatarKey,
-                  avatarInfo: AvatarInfo(uniqueId: '@test:acter.org'),
-                  mode: DisplayMode.GroupDM,
-                  avatarsInfo: [
-                    AvatarInfo(
-                      uniqueId: '@kyra:acter.org',
-                    )
-                  ],
+                  options: options2,
                   onAvatarTap: () =>
                       onTapped(context, 'Group DM Avatar tapped'),
                 ),
                 ActerAvatar(
                   key: TestKeys.widgetKey,
-                  avatarInfo: AvatarInfo(uniqueId: '@test:acter.org'),
-                  mode: DisplayMode.GroupChat,
-                  onAvatarTap: () =>
-                      onTapped(context, 'Group Chat Avatar tapped'),
-                ),
-                ActerAvatar(
-                  key: TestKeys.spaceAvatarKey,
-                  avatarInfo: AvatarInfo(uniqueId: '@test:acter.org'),
-                  mode: DisplayMode.Space,
-                  onAvatarTap: () => onTapped(context, 'Space Avatar tapped'),
+                  options: options3,
+                  onAvatarTap: () => onTapped(context, 'Default Avatar tapped'),
                 ),
               ],
             );
@@ -362,17 +364,11 @@ void main() {
       // we have found the Gesture Detector, proceed with tester operation
       expect(groupDMGestureFinder, findsOneWidget);
 
-      final groupChatGestureFinder = find.descendant(
+      final defaultAvatarGestureFinder = find.descendant(
           of: find.byKey(TestKeys.widgetKey),
           matching: find.byType(GestureDetector));
       // we have found the Gesture Detector, proceed with tester operation
-      expect(groupChatGestureFinder, findsOneWidget);
-
-      final spaceGestureFinder = find.descendant(
-          of: find.byKey(TestKeys.spaceAvatarKey),
-          matching: find.byType(GestureDetector));
-      // we have found the Gesture Detector, proceed with tester operation
-      expect(spaceGestureFinder, findsOneWidget);
+      expect(defaultAvatarGestureFinder, findsOneWidget);
 
       await tester.tap(dmGestureFinder);
       await tester.pump();
@@ -388,16 +384,9 @@ void main() {
       // dismissing snackbar
       ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
 
-      await tester.tap(groupChatGestureFinder);
+      await tester.tap(defaultAvatarGestureFinder);
       await tester.pump();
-      expect(find.text('Group Chat Avatar tapped'), findsOneWidget);
-
-      // dismissing snackbar
-      ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
-
-      await tester.tap(spaceGestureFinder);
-      await tester.pump();
-      expect(find.text('Space Avatar tapped'), findsOneWidget);
+      expect(find.text('Default Avatar tapped'), findsOneWidget);
     });
 
     /// TODO: add test for parent badge interaction. Currently facing issues

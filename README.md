@@ -8,17 +8,28 @@ Acter Avatar is a package to generate different shapes of avatars by leveraging 
 
 ## Parameters of ActerAvatar:
 
-| Parameter          |                                         Description                                         | Type                |
-| :----------------- | :-----------------------------------------------------------------------------------------: | :------------------ |
-| `mode`             | [DisplayMode](lib/src/constants/constants.dart) enum for rendering avatar shape (required). | _enum_              |
-| `size`             |                                 Size of Avatar (optional).                                  | _double_            |
-| `badgeSize`        |                        Size of Space Avatar parent badge (optional).                        | _double_            |
-| `tooltip`          |                                   `ActerAvatar` tooltip.                                    | _TooltipStyle_      |
-| `secondaryToolTip` |                       Space Avatar OR Stack secondary avatar tooltip.                       | _TooltipStyle_      |
-| `avatarInfo`       |               Holds avatar data. See [AvatarInfo](#avatarinfo) below section.               | _AvatarInfo_        |
-| `onAvatarTap`      |                       Primary avatar interacton function (optional).                        | _Function()?_       |
-| `avatarsInfo`      |                       for space and circular stack avatars.(optional)                       | _List<AvatarInfo>?_ |
-| `onParentBadgeTap` |                      Secondary avatar interaction function (optional).                      | _Function()?_       |
+`ActerAvatar` widget supports `AvatarOptions` object which is most interesting to look in first. It is main configuration parameter which can be initialised in various ways depending upon your avatar UI needs.
+
+```dart
+// Default constructor usage e.g. Space/Group Chat which can support badges.
+  AvatarOptions(AvatarInfo avatar,
+      {List<AvatarInfo>? parentBadges,
+      double? size,
+      double? badgesSize})
+
+```
+
+`AvatarOptions` also support named constructors with parameter for DM/Group DM avatars.
+
+```dart
+  // useful for setting DM/Private Chat avatar.
+  AvatarOptions.DM(AvatarInfo avatar, {double? size});
+  // useful for setting Group DM chat. Group avatars will appear as stacked avatars.
+  AvatarOptions.GroupDM(AvatarInfo avatar,
+      {List<AvatarInfo>? groupAvatars,
+      double? size,
+      double? groupAvatarSize})
+```
 
 ## AvatarInfo
 
@@ -26,44 +37,55 @@ Acter Avatar is a package to generate different shapes of avatars by leveraging 
 
 ### Usage of ActerAvatar 😎
 
-`ActerAvatar` takes both `mode` and `avatarInfo` param to render avatar.
+`ActerAvatar` takes `AvatarOptions` along with few interaction params to render avatar.
 
 ```dart
-      ActerAvatar(
-        mode: DisplayMode.DM,
-        avatarInfo: AvatarInfo(
-        uniqueId: '@aliKah:lorem.org', // required
-        displayName: 'Ali Akalın',
-        avatar: NetworkImage(*someImageLink*)),  // can be any image provider .i.e. AssetImage, MemoryImage and NetworkImage etc.
-      ),
-```
-
-Alternatively you can also provide future avatar in `AvatarInfo` which will show fallback if data isn't readily available.
-
-```dart
-      ActerAvatar(
-        mode: DisplayMode.DM,
-        avatarInfo: AvatarInfo(
+final avatarOptions = AvatarOptions(
+  AvatarInfo(
         uniqueId: '@aliKah:lorem.org',
         displayName: 'Ali Akalın',
-        avatarFuture: someFuture),  // can be any image provider .i.e. AssetImage, MemoryImage and NetworkImage etc.
-      ),
+        avatar: NetworkImage(*someImageLink*), // can be any image provider .i.e. AssetImage, MemoryImage and NetworkImage etc.
+        tooltip = ToolTipStyle.Combined), size: 20);
+
+   return ActerAvatar(
+        options: avatarOptions,
+        );
 ```
 
-You can also provide list of `AvatarInfo` with `avatarsInfo` param for displaying parent badges and circular stacked avatars.
+Alternatively you can also provide avatar future which will show fallback if data isn't readily available. It can also be left as `null` which will have same effect.
 
 ```dart
-      ActerAvatar(
-        mode: DisplayMode.Space,
-        avatarInfo: AvatarInfo(
+ final avatarOptions = AvatarOptions(
+  AvatarInfo(
         uniqueId: '@aliKah:lorem.org',
         displayName: 'Ali Akalın',
-        avatar: NetworkImage(*someImageLink*),
-        avatarInfo: [
-          // more `AvatarInfo` here.
-        ]),
+        avatarFuture: someFutureOrNull), size = 20,
+ );
+  return ActerAvatar(
+        options: avatarOptions,  // can be any image provider .i.e. AssetImage, MemoryImage and NetworkImage etc.
       ),
 ```
+
+You can also provide list of `AvatarInfo` in `parentBadges` or `groupAvatars` in `AvatarOptions.groupDM()` named constructor for displaying parent badges and circular stacked group avatars respectively.
+
+```dart
+  final avatarOptions = AvatarOptions(
+    AvatarInfo(
+        uniqueId: '@aliKah:lorem.org',
+        displayName: 'Ali Akalın',
+        avatar: NetworkImage(*someImageLink*)),
+    parentBadges: [
+      // more `AvatarInfo` here.
+    ],
+    size: 20,
+    parentBadgesSize: 10,
+  );
+    return ActerAvatar(
+        options: avatarOptions,
+      );
+```
+
+For more info regarding avatar usage. See our `Example` section.
 
 ## Credits & License
 
