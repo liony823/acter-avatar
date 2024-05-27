@@ -6,6 +6,9 @@ Acter Avatar is a package to generate different shapes of avatars by leveraging 
 
 <a href="https://github.com/acterglobal/acter-avatar/actions"><img src="https://github.com/acterglobal/acter-avatar/workflows/acter-avatar-tests/badge.svg" alt="Build Status"></a>
 
+<img width="1435" alt="example.gif" src="https://github.com/acterglobal/acter-avatar/assets/68579938/ad0e6378-35bc-4644-b234-fa929565f52b">
+
+
 ## Parameters of ActerAvatar:
 
 `ActerAvatar` widget supports `AvatarOptions` object which is most interesting to look in first. It is main configuration parameter which can be initialised in various ways depending upon your avatar UI needs.
