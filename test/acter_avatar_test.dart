@@ -325,14 +325,11 @@ void main() {
               ),
             );
             final options2 = AvatarOptions.GroupDM(
-                AvatarInfo(uniqueId: '@test:acter.org'),
-                groupAvatars: [
-                  AvatarInfo(
-                    uniqueId: '@kyra:acter.org',
-                    onAvatarTap: () =>
-                        onTapped(context, 'Group DM Avatar tapped'),
-                  )
-                ]);
+              AvatarInfo(
+                  uniqueId: '@test:acter.org',
+                  onAvatarTap: () =>
+                      onTapped(context, 'Group DM Avatar tapped')),
+            );
             final options3 = AvatarOptions(
               AvatarInfo(
                 uniqueId: '@test:acter.org',
@@ -358,23 +355,12 @@ void main() {
           }),
         ),
       ));
+
       final dmGestureFinder = find.descendant(
           of: find.byKey(TestKeys.circleAvatarKey),
           matching: find.byType(GestureDetector));
       // we have found the Gesture Detector, proceed with tester operation
       expect(dmGestureFinder, findsOneWidget);
-
-      final groupDMGestureFinder = find.descendant(
-          of: find.byKey(TestKeys.stackedAvatarKey),
-          matching: find.byType(GestureDetector));
-      // we have found the Gesture Detector, proceed with tester operation
-      expect(groupDMGestureFinder, findsOneWidget);
-
-      final defaultAvatarGestureFinder = find.descendant(
-          of: find.byKey(TestKeys.widgetKey),
-          matching: find.byType(GestureDetector));
-      // we have found the Gesture Detector, proceed with tester operation
-      expect(defaultAvatarGestureFinder, findsOneWidget);
 
       await tester.tap(dmGestureFinder);
       await tester.pump();
@@ -383,9 +369,24 @@ void main() {
       // dismissing snackbar
       ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
 
-      await tester.tap(groupDMGestureFinder);
+      final groupDM1GestureFinder = find.descendant(
+          of: find.byKey(TestKeys.stackedAvatarKey),
+          matching: find.byTooltip('@test:acter.org'));
+      // we have found the Gesture Detector, proceed with tester operation
+      expect(groupDM1GestureFinder, findsOneWidget);
+
+      await tester.tap(groupDM1GestureFinder);
       await tester.pump();
       expect(find.text('Group DM Avatar tapped'), findsOneWidget);
+
+      // dismissing snackbar
+      ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
+
+      final defaultAvatarGestureFinder = find.descendant(
+          of: find.byKey(TestKeys.widgetKey),
+          matching: find.byType(GestureDetector));
+      // we have found the Gesture Detector, proceed with tester operation
+      expect(defaultAvatarGestureFinder, findsOneWidget);
 
       // dismissing snackbar
       ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
