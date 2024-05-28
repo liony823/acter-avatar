@@ -1,6 +1,6 @@
 name: acter_avatar
 description: Avatars as used by Acter.global. Supports various shapes of avatars UI.
-version: 2.0.0+5
+version: 2.0.1+1
 homepage: https://github.com/acterglobal/acter-avatar
 
 environment:

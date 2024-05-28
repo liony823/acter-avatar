@@ -318,57 +318,49 @@ void main() {
         navigatorKey: navigatorKey,
         home: Scaffold(
           body: Builder(builder: (context) {
-            final options1 =
-                AvatarOptions.DM(AvatarInfo(uniqueId: '@test:acter.org'));
+            final options1 = AvatarOptions.DM(
+              AvatarInfo(
+                uniqueId: '@test:acter.org',
+                onAvatarTap: () => onTapped(context, 'DM Avatar tapped'),
+              ),
+            );
             final options2 = AvatarOptions.GroupDM(
-                AvatarInfo(uniqueId: '@test:acter.org'),
-                groupAvatars: [
-                  AvatarInfo(
-                    uniqueId: '@kyra:acter.org',
-                  )
-                ]);
-            final options3 =
-                AvatarOptions(AvatarInfo(uniqueId: '@test:acter.org'));
+              AvatarInfo(
+                  uniqueId: '@test:acter.org',
+                  onAvatarTap: () =>
+                      onTapped(context, 'Group DM Avatar tapped')),
+            );
+            final options3 = AvatarOptions(
+              AvatarInfo(
+                uniqueId: '@test:acter.org',
+                onAvatarTap: () => onTapped(context, 'Default Avatar tapped'),
+              ),
+            );
             return Column(
               children: <Widget>[
                 ActerAvatar(
                   key: TestKeys.circleAvatarKey,
                   options: options1,
-                  onAvatarTap: () => onTapped(context, 'DM Avatar tapped'),
                 ),
                 ActerAvatar(
                   key: TestKeys.stackedAvatarKey,
                   options: options2,
-                  onAvatarTap: () =>
-                      onTapped(context, 'Group DM Avatar tapped'),
                 ),
                 ActerAvatar(
                   key: TestKeys.widgetKey,
                   options: options3,
-                  onAvatarTap: () => onTapped(context, 'Default Avatar tapped'),
                 ),
               ],
             );
           }),
         ),
       ));
+
       final dmGestureFinder = find.descendant(
           of: find.byKey(TestKeys.circleAvatarKey),
           matching: find.byType(GestureDetector));
       // we have found the Gesture Detector, proceed with tester operation
       expect(dmGestureFinder, findsOneWidget);
-
-      final groupDMGestureFinder = find.descendant(
-          of: find.byKey(TestKeys.stackedAvatarKey),
-          matching: find.byType(GestureDetector));
-      // we have found the Gesture Detector, proceed with tester operation
-      expect(groupDMGestureFinder, findsOneWidget);
-
-      final defaultAvatarGestureFinder = find.descendant(
-          of: find.byKey(TestKeys.widgetKey),
-          matching: find.byType(GestureDetector));
-      // we have found the Gesture Detector, proceed with tester operation
-      expect(defaultAvatarGestureFinder, findsOneWidget);
 
       await tester.tap(dmGestureFinder);
       await tester.pump();
@@ -377,9 +369,24 @@ void main() {
       // dismissing snackbar
       ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
 
-      await tester.tap(groupDMGestureFinder);
+      final groupDM1GestureFinder = find.descendant(
+          of: find.byKey(TestKeys.stackedAvatarKey),
+          matching: find.byTooltip('@test:acter.org'));
+      // we have found the Gesture Detector, proceed with tester operation
+      expect(groupDM1GestureFinder, findsOneWidget);
+
+      await tester.tap(groupDM1GestureFinder);
       await tester.pump();
       expect(find.text('Group DM Avatar tapped'), findsOneWidget);
+
+      // dismissing snackbar
+      ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
+
+      final defaultAvatarGestureFinder = find.descendant(
+          of: find.byKey(TestKeys.widgetKey),
+          matching: find.byType(GestureDetector));
+      // we have found the Gesture Detector, proceed with tester operation
+      expect(defaultAvatarGestureFinder, findsOneWidget);
 
       // dismissing snackbar
       ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
@@ -389,7 +396,89 @@ void main() {
       expect(find.text('Default Avatar tapped'), findsOneWidget);
     });
 
-    /// TODO: add test for parent badge interaction. Currently facing issues
-    /// with finding deep descendant Gesture Detector.
+    testWidgets('test avatar parent badge interaction',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        navigatorKey: navigatorKey,
+        home: Scaffold(
+          body: Builder(builder: (context) {
+            final options = AvatarOptions(
+                AvatarInfo(
+                  uniqueId: '@test:acter.org',
+                ),
+                parentBadges: [
+                  AvatarInfo(
+                    uniqueId: '@acter-global:acter.org',
+                    tooltip: TooltipStyle.UniqueId,
+                    onAvatarTap: () =>
+                        onTapped(context, 'Parent Badge 1 Tapped'),
+                  ),
+                  AvatarInfo(
+                    uniqueId: '@acter-activism:acter.org',
+                    tooltip: TooltipStyle.UniqueId,
+                    onAvatarTap: () =>
+                        onTapped(context, 'Parent Badge 2 Tapped'),
+                  ),
+                  AvatarInfo(
+                    uniqueId: '@acter-contributors:acter.org',
+                    tooltip: TooltipStyle.UniqueId,
+                    onAvatarTap: () =>
+                        onTapped(context, 'Parent Badge 3 Tapped'),
+                  )
+                ]);
+
+            return Column(
+              children: <Widget>[
+                ActerAvatar(
+                  key: TestKeys.widgetKey,
+                  options: options,
+                ),
+              ],
+            );
+          }),
+        ),
+      ));
+      final widgetFinder = find.byKey(TestKeys.widgetKey);
+      // we have found the Gesture Detector, proceed with tester operation
+      expect(widgetFinder, findsOneWidget);
+
+      final parentBadge1Finder = find.descendant(
+          of: find.byTooltip('@acter-global:acter.org'),
+          matching: find.byType(GestureDetector));
+      // we have found the Gesture Detector, proceed with tester operation
+
+      await tester.tap(parentBadge1Finder);
+      await tester.pump();
+      expect(parentBadge1Finder, findsOneWidget);
+      expect(find.text('Parent Badge 1 Tapped'), findsOneWidget);
+
+      // dismissing snackbar
+      ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
+
+      final parentBadge2Finder = find.descendant(
+          of: find.byTooltip('@acter-activism:acter.org'),
+          matching: find.byType(GestureDetector));
+      // we have found the Gesture Detector, proceed with tester operation
+      expect(parentBadge2Finder, findsOneWidget);
+
+      await tester.tap(parentBadge2Finder);
+      await tester.pump();
+      expect(find.text('Parent Badge 2 Tapped'), findsOneWidget);
+
+      // dismissing snackbar
+      ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
+
+      final parentBadge3Finder = find.descendant(
+          of: find.byTooltip('@acter-contributors:acter.org'),
+          matching: find.byType(GestureDetector));
+      // we have found the Gesture Detector, proceed with tester operation
+      expect(parentBadge2Finder, findsOneWidget);
+      await tester.tap(parentBadge3Finder);
+      await tester.pump();
+      expect(find.text('Parent Badge 3 Tapped'), findsOneWidget);
+
+      // dismissing snackbar
+      ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
+    });
   });
 }
