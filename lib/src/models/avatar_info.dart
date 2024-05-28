@@ -17,6 +17,9 @@ class AvatarInfo {
   /// a future that loads the avatar (show fallback until loaded)
   final Future<ImageProvider<Object>?>? avatarFuture;
 
+  /// Avatar gesture tap
+  final void Function()? onAvatarTap;
+
   /// If and how to display the tooltip.
   final TooltipStyle tooltip;
 
@@ -26,6 +29,7 @@ class AvatarInfo {
     this.uniqueName,
     this.avatar,
     this.avatarFuture,
+    this.onAvatarTap,
     this.tooltip = TooltipStyle.Combined,
   });
 }

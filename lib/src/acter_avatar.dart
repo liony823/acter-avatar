@@ -15,17 +15,9 @@ class ActerAvatar extends StatefulWidget {
   /// Defining avatars type and configuration. See [AvatarOptions]
   final AvatarOptions options;
 
-  /// Avatar gesture tap
-  final void Function()? onAvatarTap;
-
-  /// Avatar gesture tap for parent badges.
-  final void Function()? onParentBadgesTap;
-
   ActerAvatar({
     Key? key,
     required this.options,
-    this.onAvatarTap,
-    this.onParentBadgesTap,
   }) : super(
             key: key ??
                 Key('avatar-${options.avatar.uniqueId}-${options.size}'));
@@ -94,7 +86,7 @@ class _ActerAvatar extends State<ActerAvatar> {
   Widget build(BuildContext context) {
     final avatarInfo = widget.options.avatar;
     final child =
-        GestureDetector(onTap: widget.onAvatarTap, child: inner(context));
+        GestureDetector(onTap: avatarInfo.onAvatarTap, child: inner(context));
     return tooltipMsgWithChild(avatarInfo, child);
   }
 
@@ -260,11 +252,8 @@ class _ActerAvatar extends State<ActerAvatar> {
     List<Widget> children = badges
         .getRange(0, thresholdCount)
         .map(
-          (badge) => GestureDetector(
-            onTap: widget.onParentBadgesTap,
-            child: ActerAvatar(
-              options: AvatarOptions(badge, size: size),
-            ),
+          (badge) => ActerAvatar(
+            options: AvatarOptions(badge, size: size),
           ),
         )
         .cast<Widget>()
