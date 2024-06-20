@@ -1,3 +1,8 @@
+### [2.0.1+1]
+
+- Avatar interaction fixes.
+- Add flutter tests for parent badge avatars.
+
 ### [2.0.0+5]
 
 Redefined Acter Avatars
