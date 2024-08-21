@@ -11,6 +11,7 @@ abstract class AvatarOptions with _$AvatarOptions {
   /// Default usage .i.e. Space/Group Chat. Group avatars will appear as secondary badges.
   const factory AvatarOptions(AvatarInfo avatar,
       {List<AvatarInfo>? parentBadges,
+      Function()? onTapParentBadges,
       double? size,
       double? badgesSize}) = DefaultAvatarOptions;
 

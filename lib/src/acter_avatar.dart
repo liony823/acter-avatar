@@ -141,8 +141,9 @@ class _ActerAvatar extends State<ActerAvatar> {
   Widget renderWithAvatar(BuildContext context, ImageProvider avatar) {
     return widget.options.when(
         // default render .i.e. Group Chat/Space
-        (avatarInfo, parentBadges, size, badgesSize) =>
-            _renderDefault(avatar, parentBadges, size, badgesSize),
+        (avatarInfo, parentBadges, onTapParentBadges, size, badgesSize) =>
+            _renderDefault(
+                avatar, parentBadges, onTapParentBadges, size, badgesSize),
         // render for DM
         DM: (avatarInfo, size) => _renderDM(avatar, size),
         // render for Group DM
@@ -153,6 +154,7 @@ class _ActerAvatar extends State<ActerAvatar> {
   Widget _renderDefault(
     ImageProvider avatar,
     List<AvatarInfo>? badges,
+    Function()? onTapParentBadges,
     double? size,
     double? badgesSize,
   ) {
@@ -276,12 +278,15 @@ class _ActerAvatar extends State<ActerAvatar> {
       ));
     }
 
-    return Positioned(
-      bottom: -badgeOverflow,
-      right: -badgeOverflow,
-      child: Wrap(
-        spacing: -5,
-        children: children,
+    return InkWell(
+      onTap: options.onTapParentBadges,
+      child: Positioned(
+        bottom: -badgeOverflow,
+        right: -badgeOverflow,
+        child: Wrap(
+          spacing: -5,
+          children: children,
+        ),
       ),
     );
   }

@@ -20,8 +20,12 @@ mixin _$AvatarOptions {
   double? get size => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)
+    TResult Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)
         $default, {
     required TResult Function(AvatarInfo avatar, double? size) DM,
     required TResult Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
@@ -31,8 +35,12 @@ mixin _$AvatarOptions {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)?
+    TResult? Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)?
         $default, {
     TResult? Function(AvatarInfo avatar, double? size)? DM,
     TResult? Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
@@ -42,8 +50,12 @@ mixin _$AvatarOptions {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)?
+    TResult Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)?
         $default, {
     TResult Function(AvatarInfo avatar, double? size)? DM,
     TResult Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
@@ -129,6 +141,7 @@ abstract class _$$DefaultAvatarOptionsImplCopyWith<$Res>
   $Res call(
       {AvatarInfo avatar,
       List<AvatarInfo>? parentBadges,
+      dynamic Function()? onTapParentBadges,
       double? size,
       double? badgesSize});
 }
@@ -146,6 +159,7 @@ class __$$DefaultAvatarOptionsImplCopyWithImpl<$Res>
   $Res call({
     Object? avatar = null,
     Object? parentBadges = freezed,
+    Object? onTapParentBadges = freezed,
     Object? size = freezed,
     Object? badgesSize = freezed,
   }) {
@@ -158,6 +172,10 @@ class __$$DefaultAvatarOptionsImplCopyWithImpl<$Res>
           ? _value._parentBadges
           : parentBadges // ignore: cast_nullable_to_non_nullable
               as List<AvatarInfo>?,
+      onTapParentBadges: freezed == onTapParentBadges
+          ? _value.onTapParentBadges
+          : onTapParentBadges // ignore: cast_nullable_to_non_nullable
+              as dynamic Function()?,
       size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
@@ -174,7 +192,10 @@ class __$$DefaultAvatarOptionsImplCopyWithImpl<$Res>
 
 class _$DefaultAvatarOptionsImpl implements DefaultAvatarOptions {
   const _$DefaultAvatarOptionsImpl(this.avatar,
-      {final List<AvatarInfo>? parentBadges, this.size, this.badgesSize})
+      {final List<AvatarInfo>? parentBadges,
+      this.onTapParentBadges,
+      this.size,
+      this.badgesSize})
       : _parentBadges = parentBadges;
 
   @override
@@ -190,13 +211,15 @@ class _$DefaultAvatarOptionsImpl implements DefaultAvatarOptions {
   }
 
   @override
+  final dynamic Function()? onTapParentBadges;
+  @override
   final double? size;
   @override
   final double? badgesSize;
 
   @override
   String toString() {
-    return 'AvatarOptions(avatar: $avatar, parentBadges: $parentBadges, size: $size, badgesSize: $badgesSize)';
+    return 'AvatarOptions(avatar: $avatar, parentBadges: $parentBadges, onTapParentBadges: $onTapParentBadges, size: $size, badgesSize: $badgesSize)';
   }
 
   @override
@@ -207,14 +230,21 @@ class _$DefaultAvatarOptionsImpl implements DefaultAvatarOptions {
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
             const DeepCollectionEquality()
                 .equals(other._parentBadges, _parentBadges) &&
+            (identical(other.onTapParentBadges, onTapParentBadges) ||
+                other.onTapParentBadges == onTapParentBadges) &&
             (identical(other.size, size) || other.size == size) &&
             (identical(other.badgesSize, badgesSize) ||
                 other.badgesSize == badgesSize));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, avatar,
-      const DeepCollectionEquality().hash(_parentBadges), size, badgesSize);
+  int get hashCode => Object.hash(
+      runtimeType,
+      avatar,
+      const DeepCollectionEquality().hash(_parentBadges),
+      onTapParentBadges,
+      size,
+      badgesSize);
 
   @JsonKey(ignore: true)
   @override
@@ -227,36 +257,49 @@ class _$DefaultAvatarOptionsImpl implements DefaultAvatarOptions {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)
+    TResult Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)
         $default, {
     required TResult Function(AvatarInfo avatar, double? size) DM,
     required TResult Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
             double? size, double? groupAvatarSize)
         GroupDM,
   }) {
-    return $default(avatar, parentBadges, size, badgesSize);
+    return $default(avatar, parentBadges, onTapParentBadges, size, badgesSize);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)?
+    TResult? Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)?
         $default, {
     TResult? Function(AvatarInfo avatar, double? size)? DM,
     TResult? Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
             double? size, double? groupAvatarSize)?
         GroupDM,
   }) {
-    return $default?.call(avatar, parentBadges, size, badgesSize);
+    return $default?.call(
+        avatar, parentBadges, onTapParentBadges, size, badgesSize);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)?
+    TResult Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)?
         $default, {
     TResult Function(AvatarInfo avatar, double? size)? DM,
     TResult Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
@@ -265,7 +308,8 @@ class _$DefaultAvatarOptionsImpl implements DefaultAvatarOptions {
     required TResult orElse(),
   }) {
     if ($default != null) {
-      return $default(avatar, parentBadges, size, badgesSize);
+      return $default(
+          avatar, parentBadges, onTapParentBadges, size, badgesSize);
     }
     return orElse();
   }
@@ -308,12 +352,14 @@ class _$DefaultAvatarOptionsImpl implements DefaultAvatarOptions {
 abstract class DefaultAvatarOptions implements AvatarOptions {
   const factory DefaultAvatarOptions(final AvatarInfo avatar,
       {final List<AvatarInfo>? parentBadges,
+      final dynamic Function()? onTapParentBadges,
       final double? size,
       final double? badgesSize}) = _$DefaultAvatarOptionsImpl;
 
   @override
   AvatarInfo get avatar;
   List<AvatarInfo>? get parentBadges;
+  dynamic Function()? get onTapParentBadges;
   @override
   double? get size;
   double? get badgesSize;
@@ -398,8 +444,12 @@ class _$AvatarOptionsDMImpl implements AvatarOptionsDM {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)
+    TResult Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)
         $default, {
     required TResult Function(AvatarInfo avatar, double? size) DM,
     required TResult Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
@@ -412,8 +462,12 @@ class _$AvatarOptionsDMImpl implements AvatarOptionsDM {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)?
+    TResult? Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)?
         $default, {
     TResult? Function(AvatarInfo avatar, double? size)? DM,
     TResult? Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
@@ -426,8 +480,12 @@ class _$AvatarOptionsDMImpl implements AvatarOptionsDM {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)?
+    TResult Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)?
         $default, {
     TResult Function(AvatarInfo avatar, double? size)? DM,
     TResult Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
@@ -603,8 +661,12 @@ class _$AvatarOptionsGroupDMImpl implements AvatarOptionsGroupDM {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)
+    TResult Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)
         $default, {
     required TResult Function(AvatarInfo avatar, double? size) DM,
     required TResult Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
@@ -617,8 +679,12 @@ class _$AvatarOptionsGroupDMImpl implements AvatarOptionsGroupDM {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)?
+    TResult? Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)?
         $default, {
     TResult? Function(AvatarInfo avatar, double? size)? DM,
     TResult? Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
@@ -631,8 +697,12 @@ class _$AvatarOptionsGroupDMImpl implements AvatarOptionsGroupDM {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(AvatarInfo avatar, List<AvatarInfo>? parentBadges,
-            double? size, double? badgesSize)?
+    TResult Function(
+            AvatarInfo avatar,
+            List<AvatarInfo>? parentBadges,
+            dynamic Function()? onTapParentBadges,
+            double? size,
+            double? badgesSize)?
         $default, {
     TResult Function(AvatarInfo avatar, double? size)? DM,
     TResult Function(AvatarInfo avatar, List<AvatarInfo>? groupAvatars,
