@@ -278,11 +278,11 @@ class _ActerAvatar extends State<ActerAvatar> {
       ));
     }
 
-    return InkWell(
-      onTap: options.onTapParentBadges,
-      child: Positioned(
-        bottom: -badgeOverflow,
-        right: -badgeOverflow,
+    return Positioned(
+      bottom: -badgeOverflow,
+      right: -badgeOverflow,
+      child: InkWell(
+        onTap: options.onTapParentBadges,
         child: Wrap(
           spacing: -5,
           children: children,
