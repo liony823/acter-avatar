@@ -254,26 +254,32 @@ class _ActerAvatar extends State<ActerAvatar> {
     List<Widget> children = badges
         .getRange(0, thresholdCount)
         .map(
-          (badge) => ActerAvatar(
-            options: AvatarOptions(badge, size: size),
+          (badge) => GestureDetector(
+            onTap: options.onTapParentBadges,
+            child: ActerAvatar(
+              options: AvatarOptions(badge, size: size),
+            ),
           ),
         )
         .cast<Widget>()
         .toList();
 
     if (badgesLength > 3) {
-      children.add(Container(
-        width: 10,
-        height: 10,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Colors.green,
-          shape: BoxShape.circle,
-        ),
-        child: Text(
-          '+${badgesLength - 3}',
-          style: const TextStyle(fontSize: 8),
-          textScaler: TextScaler.linear(0.7),
+      children.add(GestureDetector(
+        onTap: options.onTapParentBadges,
+        child: Container(
+          width: 10,
+          height: 10,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            color: Colors.green,
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            '+${badgesLength - 3}',
+            style: const TextStyle(fontSize: 8),
+            textScaler: TextScaler.linear(0.7),
+          ),
         ),
       ));
     }
@@ -281,12 +287,9 @@ class _ActerAvatar extends State<ActerAvatar> {
     return Positioned(
       bottom: -badgeOverflow,
       right: -badgeOverflow,
-      child: GestureDetector(
-        onTap: options.onTapParentBadges,
-        child: Wrap(
-          spacing: -5,
-          children: children,
-        ),
+      child: Wrap(
+        spacing: -5,
+        children: children,
       ),
     );
   }
