@@ -281,7 +281,7 @@ class _ActerAvatar extends State<ActerAvatar> {
     return Positioned(
       bottom: -badgeOverflow,
       right: -badgeOverflow,
-      child: InkWell(
+      child: GestureDetector(
         onTap: options.onTapParentBadges,
         child: Wrap(
           spacing: -5,
