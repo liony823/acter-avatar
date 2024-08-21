@@ -141,8 +141,9 @@ class _ActerAvatar extends State<ActerAvatar> {
   Widget renderWithAvatar(BuildContext context, ImageProvider avatar) {
     return widget.options.when(
         // default render .i.e. Group Chat/Space
-        (avatarInfo, parentBadges, size, badgesSize) =>
-            _renderDefault(avatar, parentBadges, size, badgesSize),
+        (avatarInfo, parentBadges, onTapParentBadges, size, badgesSize) =>
+            _renderDefault(
+                avatar, parentBadges, onTapParentBadges, size, badgesSize),
         // render for DM
         DM: (avatarInfo, size) => _renderDM(avatar, size),
         // render for Group DM
@@ -153,6 +154,7 @@ class _ActerAvatar extends State<ActerAvatar> {
   Widget _renderDefault(
     ImageProvider avatar,
     List<AvatarInfo>? badges,
+    Function()? onTapParentBadges,
     double? size,
     double? badgesSize,
   ) {
@@ -252,26 +254,32 @@ class _ActerAvatar extends State<ActerAvatar> {
     List<Widget> children = badges
         .getRange(0, thresholdCount)
         .map(
-          (badge) => ActerAvatar(
-            options: AvatarOptions(badge, size: size),
+          (badge) => GestureDetector(
+            onTap: options.onTapParentBadges,
+            child: ActerAvatar(
+              options: AvatarOptions(badge, size: size),
+            ),
           ),
         )
         .cast<Widget>()
         .toList();
 
     if (badgesLength > 3) {
-      children.add(Container(
-        width: 10,
-        height: 10,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Colors.green,
-          shape: BoxShape.circle,
-        ),
-        child: Text(
-          '+${badgesLength - 3}',
-          style: const TextStyle(fontSize: 8),
-          textScaler: TextScaler.linear(0.7),
+      children.add(GestureDetector(
+        onTap: options.onTapParentBadges,
+        child: Container(
+          width: 10,
+          height: 10,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            color: Colors.green,
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            '+${badgesLength - 3}',
+            style: const TextStyle(fontSize: 8),
+            textScaler: TextScaler.linear(0.7),
+          ),
         ),
       ));
     }
